@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "81304c17-d30c-471a-867d-70421e88d369", "assessment_id": "ae4ff37d-b29f-431a-a4cc-87daa3cc3e83", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>My dresser has 5 ________________.</p>", "media": null, "options": [{"option_id": "1f9c1d0e-47a3-4e15-88f9-0db635bd8ebc", "content": "nightstands", "image_url": ""}, {"option_id": "2fb0cc6e-84b5-4d3b-92c8-2c779709d525", "content": "beds", "image_url": ""}, {"option_id": "df0ad74d-14e5-494f-9ddd-b4e46ae7c46e", "content": "drawers", "image_url": ""}, {"option_id": "a9465d86-99ee-4aa9-94f1-e4c5d0520ae0", "content": "wardrobes", "image_url": ""}], "answer": {"option_id": "df0ad74d-14e5-494f-9ddd-b4e46ae7c46e", "feedback": "\u201cMy dresser has 5 drawers. / Minha c\u00f4moda tem 5 gavetas.\u201d", "correct_option_id": "df0ad74d-14e5-494f-9ddd-b4e46ae7c46e"}}, {"question_id": "d15bc82e-0aeb-4abf-a3ac-9c1f798de089", "assessment_id": "ae4ff37d-b29f-431a-a4cc-87daa3cc3e83", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Jackie, can you put the cake in the _________ and turn it on to 180\u00baC?</p>", "media": null, "options": [{"option_id": "b87bf5c3-7806-4ad2-8bd4-27ce44e0e4bd", "content": "oven", "image_url": ""}, {"option_id": "a7b51076-1db9-42b7-999b-14089b827aed", "content": "stove", "image_url": ""}, {"option_id": "eadcefb5-9b8f-4024-9e6b-f26875aa5ac2", "content": "table", "image_url": ""}, {"option_id": "55fac3d1-107f-4a4d-9148-c52b440cb3b6", "content": "fridge", "image_url": ""}], "answer": {"option_id": "b87bf5c3-7806-4ad2-8bd4-27ce44e0e4bd", "feedback": "\u201cJackie, can you put the cake in the oven and turn it on to 180\u00baC? / Jackie, voc\u00ea pode colocar o bolo no forno e ligar a 180\u00baC?\u201d", "correct_option_id": "b87bf5c3-7806-4ad2-8bd4-27ce44e0e4bd"}}, {"question_id": "7f141d2f-3ce3-4589-9bb1-3ee5a11d9024", "assessment_id": "ae4ff37d-b29f-431a-a4cc-87daa3cc3e83", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>- Where do you live?</p><p>- ____________________.</p>", "media": null, "options": [{"option_id": "e490a892-fd21-4107-8a52-40b048b12869", "content": "I live.", "image_url": ""}, {"option_id": "e9f81f97-b5ef-4481-a5b8-cea28b08ec6f", "content": "I don\u2019t like it.", "image_url": ""}, {"option_id": "4c8f98ed-a16a-4d53-8c75-cae83fedc379", "content": "I live in an apartment.", "image_url": ""}, {"option_id": "0c170b6b-ef1d-4ae6-91bb-98eb6eaa399b", "content": "I like to live there.", "image_url": ""}], "answer": {"option_id": "4c8f98ed-a16a-4d53-8c75-cae83fedc379", "feedback": "\u201c- Where do you live? / Onde voc\u00ea mora? - I live in an apartment. / Eu moro em um apartamento.\u201d", "correct_option_id": "4c8f98ed-a16a-4d53-8c75-cae83fedc379"}}, {"question_id": "49546483-8c9b-4955-b505-37c1632632e0", "assessment_id": "ae4ff37d-b29f-431a-a4cc-87daa3cc3e83", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analise a imagem e complete a frase:</p><p><br></p><p>Do you have a __________ in your house?</p><p><br></p><p><img src=\"https://cdn-jirafales.fluencyacademy.io/content/images/c290abd6-66ea-42de-a529-1a93a5458cb4\"></p>", "media": null, "options": [{"option_id": "d3954401-c301-4e2e-9beb-9afba108ae86", "content": "restaurant room", "image_url": ""}, {"option_id": "755ea730-d3d2-4108-a590-9ad34eabdb74", "content": "dining room", "image_url": ""}, {"option_id": "bcab37c3-f2b8-470a-924a-dd94eeef89f2", "content": "lunch room", "image_url": ""}, {"option_id": "75daa624-fd20-4744-86fe-60b819a7e03c", "content": "cooking room", "image_url": ""}], "answer": {"option_id": "755ea730-d3d2-4108-a590-9ad34eabdb74", "feedback": "Um \u201cdining room\u201d \u00e9 a sala de jantar em uma casa. ", "correct_option_id": "755ea730-d3d2-4108-a590-9ad34eabdb74"}}, {"question_id": "c558a3fd-f716-4127-860b-ba1beccfc7d9", "assessment_id": "ae4ff37d-b29f-431a-a4cc-87daa3cc3e83", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analise a imagem e complete a frase:</p><p><br></p><p>This kitchen has ___________.</p><p><br></p><p><img src=\"https://cdn-jirafales.fluencyacademy.io/content/images/d009846d-e08d-40f5-8211-1c18c749e0e5\"></p>", "media": null, "options": [{"option_id": "1bd9d9e9-2d4a-4659-b1c8-400077752ded", "content": "curtains", "image_url": ""}, {"option_id": "63a4325b-a20e-4823-b53a-1bdfc6c853d0", "content": "blinds", "image_url": ""}, {"option_id": "acf15c16-ca17-4af7-bc5d-c081d0f95d2d", "content": "blackout curtains", "image_url": ""}, {"option_id": "0927a6a3-53df-4f3c-a445-976e7982747a", "content": "shades", "image_url": ""}], "answer": {"option_id": "63a4325b-a20e-4823-b53a-1bdfc6c853d0", "feedback": "\u201cThis kitchen has blinds.\u201d (Essa cozinha tem persianas.)", "correct_option_id": "63a4325b-a20e-4823-b53a-1bdfc6c853d0"}}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

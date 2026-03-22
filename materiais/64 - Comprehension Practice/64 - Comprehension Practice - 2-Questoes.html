@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "f042bca6-5dc0-4f4a-85cf-22e01583a455", "assessment_id": "2a1f0c10-04bf-471a-9544-d209d1bc9638", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio e selecione a alternativa que corretamente completa a frase:</p><p><br></p><p>When you take the phone, ______________________________.</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17023044421552095_01_When_you_take_the_phone_you.mp3"}, "options": [{"option_id": "b2ab09f7-2af6-4de0-89ef-91bad1ba3029", "content": "you\u2019ll play the slow marching", "image_url": ""}, {"option_id": "7d6ffb80-9c95-4778-bd28-baf4a18b51ba", "content": "you play the slow machine", "image_url": ""}, {"option_id": "b56d1034-1ad7-46e8-946c-ab41db469ada", "content": "you played the machine", "image_url": ""}, {"option_id": "5b694bf5-fb39-481f-90b9-b824f982a423", "content": "you play the slot machine", "image_url": ""}], "answer": null}, {"question_id": "d9b66de3-b2f9-430d-8006-525c29a4ab61", "assessment_id": "2a1f0c10-04bf-471a-9544-d209d1bc9638", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio e selecione a op\u00e7\u00e3o que corretamente o transcreve:</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17023044441702557_03_This_feature_was_designed_o.mp3"}, "options": [{"option_id": "bcdf1634-b83f-4ebb-928f-b0896ab8bac3", "content": "This feature was designed on purpose.", "image_url": ""}, {"option_id": "c8a20bb7-42dd-4893-a6e4-07971233041f", "content": "These features were design on purpose.", "image_url": ""}, {"option_id": "30aabfcf-a7ab-4e17-8579-7e2c68212b9b", "content": "This feature was designed on per pass.", "image_url": ""}, {"option_id": "3ec970b1-9a72-43e2-917b-ec47cb8389e6", "content": "This feature is a designer in per pass.", "image_url": ""}], "answer": null}, {"question_id": "55b04b0b-b3d9-4f5f-8d38-3b283b88bb0a", "assessment_id": "2a1f0c10-04bf-471a-9544-d209d1bc9638", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Se algu\u00e9m diz que pode ter um presente ou algo parecido pra voc\u00ea, como essa pessoa diria isso em ingl\u00eas?</p>", "media": null, "options": [{"option_id": "6efea08b-e0ef-4f6f-80b6-f7b2a12260b3", "content": "I may have a gift for her.", "image_url": ""}, {"option_id": "0625384d-1c08-4384-ae9a-9d7323345d90", "content": "I might have something for you.", "image_url": ""}, {"option_id": "aab654ba-f781-4e42-9626-e221249a3e80", "content": "I have a gift for us.", "image_url": ""}, {"option_id": "a3bb05aa-6b9b-4f35-aab9-54b39f3dd0a9", "content": "I can have something for you.", "image_url": ""}], "answer": null}, {"question_id": "1a07cda7-c303-4dbb-a68c-63603a752b1e", "assessment_id": "2a1f0c10-04bf-471a-9544-d209d1bc9638", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Oh my God! You scared ___________ me!</p>", "media": null, "options": [{"option_id": "d85e68a8-dc86-476d-a1fa-3172bade1638", "content": "the hell out of", "image_url": ""}, {"option_id": "ab7bf3e6-cfda-44c7-a101-7611f5365f23", "content": "a lot", "image_url": ""}, {"option_id": "d1d70948-ca17-45c6-9177-d6ebb6c64443", "content": "the heaven out of", "image_url": ""}, {"option_id": "a8bd960f-b4f9-4b6d-a79b-349e368d16c7", "content": "very much", "image_url": ""}], "answer": null}, {"question_id": "ce165c95-45c9-4f55-9c63-4c170045bafd", "assessment_id": "2a1f0c10-04bf-471a-9544-d209d1bc9638", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Selecione a op\u00e7\u00e3o que corretamente traduz a frase a seguir:</p><p><br></p><p>\u201cI reached over for the salt when she called me.\u201d</p>", "media": null, "options": [{"option_id": "74b3722b-b5cb-4706-bab8-024b4cd62076", "content": "Eu ia atingir o sal quando ela me chamou.", "image_url": ""}, {"option_id": "0ca42bc6-c636-4f34-98a3-dd519d094580", "content": "Estendi a m\u00e3o para pegar o sal quando ela me ligou.", "image_url": ""}, {"option_id": "5548c841-3a4c-4d27-91a9-7aec6b0f2398", "content": "Estendi a m\u00e3o para pegar o salgado e ela me ligou.", "image_url": ""}, {"option_id": "0543bdbd-cd1b-4bd0-8bed-8086069afd27", "content": "Eu ia usar o sal quando ela me chamou.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

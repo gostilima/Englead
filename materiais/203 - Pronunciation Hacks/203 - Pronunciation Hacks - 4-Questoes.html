@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "6228c6be-4540-42ba-9b84-fdc9bae40af9", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Which of the following is NOT an appropriate response to this indirect question?</p><p><br /></p><p><em>Are you copying me again?</em></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "0a7c599e-0c94-48f1-83e2-d4de32922bb6", "content": "Why should I? You always copy me!", "image_url": ""}, {"option_id": "3b87ba3c-bdcf-4009-9011-94123bddbd30", "content": "I know, right? I should copy more often!", "image_url": ""}, {"option_id": "283984a9-6daa-4bd5-9d4a-0bbec58aca56", "content": "Oh, come on! Can't you take a joke?", "image_url": ""}, {"option_id": "33480b07-fe56-4fda-8b89-b6e7d5a91171", "content": "You're just jealous because I do it better.", "image_url": ""}], "answer": null}, {"question_id": "c2050f7c-24d7-4b1f-a7e6-ef4a5f35969f", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the dialogue.</p><p><br /></p><p>What does the patient say he has?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/O4-1_ex2.mp3"}, "options": [{"option_id": "ac64b64f-03e6-4264-b5e2-3299bfcfd1a3", "content": "He has a lot in his throat.\u00a0", "image_url": ""}, {"option_id": "09e051a9-b10f-4955-bb93-3da0098d78e4", "content": "He has something hot in his throat.\u00a0", "image_url": ""}, {"option_id": "c8e841e4-7f8d-4f2c-89c6-7680b03c5146", "content": "He has a knot in his throat.\u00a0", "image_url": ""}, {"option_id": "c0232626-19ac-4779-9825-052bbad2096e", "content": "He has a dot in his throat.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "2029c0d5-8ace-4534-ab05-26841cd15796", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>The teacher suggested you hit the books and step up your studies, but the last explanation wasn't clear. </p><p><br /></p><p>How could the teacher be asked to clarify?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "327360a9-c3d2-49ec-8c14-6f4ed6ae1d5f", "content": "Could you break it down for me, please?\u00a0", "image_url": ""}, {"option_id": "4b7cc687-2493-452f-93bc-e4bc5bb53090", "content": "Can you check it out for me, please?\u00a0", "image_url": ""}, {"option_id": "efad3477-50ac-4be1-8479-021fe7a3da58", "content": "Would you get it across to me, please?", "image_url": ""}, {"option_id": "9d436c84-3bf0-4b04-9b47-44506f484a56", "content": "Could you tell it apart from me, please?\u00a0", "image_url": ""}], "answer": null}, {"question_id": "62318b1b-3b1b-4e56-a980-9274ee5b8072", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Based on the picture, it is not correct to assume that: </p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXeGjn3Tjs8rhp5y7KFOJyV-6WuPfPnOJ7FDUcNBeMBbFf4iRTeGi3W5hmtzGe8FAHkxED7WCLCHCrxnMl1AzpmcJGOT0okvkUlawvUsepgvN6Ji2uxMk1abVKZL3RjRj3JNlX8XUbAz-CKKSEOvpH_pffJd?key=5IMYQGvLDebRMjv1rPP75w\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "e17c0551-08ea-4678-83c4-312ff14787f8", "content": "she has been at an inpatient unit.\u00a0", "image_url": ""}, {"option_id": "a5cabcfd-dba5-4681-a4a1-1b2c6494f784", "content": "she has checked in at the hospital.", "image_url": ""}, {"option_id": "0c8af7ce-c2b4-4f18-b92f-a75891aaebf3", "content": "she\u2019s been discharged from the hospital.", "image_url": ""}, {"option_id": "7268104f-07de-4ec3-a24d-77cfb9dca412", "content": "she has been admitted to the hospital.", "image_url": ""}], "answer": null}, {"question_id": "38ee166d-a266-4670-ab73-8e42ae39c33e", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. What is his boss actually telling him?\u00a0\u00a0</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/AUTOCORRECT_13_When I was rapidly leaving .mp3"}, "options": [{"option_id": "b30a7ca7-033a-4534-98c3-b1316453d4d0", "content": "He is telling him to check the people who didn\u2019t go to the meeting.\u00a0", "image_url": ""}, {"option_id": "b7b3994e-32d3-494f-a784-53d4ae120abf", "content": "The boss is reminding him to track the number of attendees.", "image_url": ""}, {"option_id": "db9f81a6-2035-45cd-a1fc-ee8e6e6e4eed", "content": "He is asking him to stay until the end to say goodbye to people.\u00a0", "image_url": ""}, {"option_id": "682e8d79-67bd-4af7-8a8c-50a16c436fe5", "content": "He\u2019s reminding him he\u2019s responsible for taking pictures of people present.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "250527fc-b6e8-402f-b8a4-be75d4231b17", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>I was supposed to throw a birthday party but realized my pantry was empty. I decided to go grocery shopping. When I was in the canned food aisle, I realized I didn\u2019t have enough money to pay for the groceries. </p><p><br /></p><p>Which phrase best indicates the speaker didn't have enough money while shopping?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "ddbae22d-85dc-4915-9978-2ac0cc7e4416", "content": "I ran out of money while shopping for groceries.", "image_url": ""}, {"option_id": "bb68ebe4-7051-48e3-9555-397979f676e7", "content": "I discovered my wallet was empty in the canned food aisle.", "image_url": ""}, {"option_id": "47f99cf5-e00f-4385-bf75-99046758ddee", "content": " I realized I had enough cash while browsing.", "image_url": ""}, {"option_id": "f0de6b41-661c-4908-95a1-49ded9baf331", "content": "I found out I was short on money while shopping for groceries.", "image_url": ""}], "answer": null}, {"question_id": "e333300f-c33a-4828-91f0-6ee42d92dee3", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>You sent her the messages, _____ you?\u00a0</p><p><br /></p>", "media": null, "options": [{"option_id": "b16ad3d4-87bd-4b23-8c82-3ae5156f55c9", "content": "didn\u2019t.", "image_url": ""}, {"option_id": "0db1fa6c-1f62-4dea-a6cf-a645270dec61", "content": "don\u2019t.", "image_url": ""}, {"option_id": "b0a672fc-c776-444c-8e54-2f1f061d2e9a", "content": "haven\u2019t.", "image_url": ""}, {"option_id": "19fa1171-62db-4061-9911-10cd37355e04", "content": "did.", "image_url": ""}], "answer": null}, {"question_id": "af489515-a0ff-4879-8f22-e12136ea328e", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio and choose the word you do not hear.\u00a0</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SHADOWING_U14_Reggie_the_rich_banker.mp3"}, "options": [{"option_id": "2946f730-7911-45b2-8cb6-31bb228e253f", "content": "rapidly", "image_url": ""}, {"option_id": "a553a061-4bc3-4f15-958d-e8a6688d745e", "content": "recounted", "image_url": ""}, {"option_id": "187a1c4b-a7b5-4062-a600-6ce236fcb60e", "content": "reckon", "image_url": ""}, {"option_id": "f64f60cd-2a00-4a58-9546-a2e2baaf9964", "content": "rich", "image_url": ""}], "answer": null}, {"question_id": "234758f3-203c-4cdf-98a5-bcaadeafdcba", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p><strong><em>Patient: </em></strong><em>Doctor, I\u2019m still having this throbbing, sharp, relentless, and excruciating pain in my back. It didn\u2019t get better.</em></p><p><strong><em>Doctor:</em></strong><em> I understand, but you came here yesterday. You have to stick to the medication I prescribed earlier. It's important for managing your pain. effectively.</em></p><p><br /></p><p>According to the conversation, what can be inferred about the patient's pain?</p>", "media": null, "options": [{"option_id": "b2725dd4-47f7-4e45-af38-9dcfb824d87a", "content": "The patient hasn\u2019t taken the prescribed medication yet.", "image_url": ""}, {"option_id": "e4ad73da-6419-4876-abfa-6e661bda1351", "content": "The patient\u2019s pain has worsened despite medication.", "image_url": ""}, {"option_id": "2b70b3bf-3d1a-4d1d-b7b1-c4aee7f15487", "content": "The pain hasn't improved despite taking the medication.", "image_url": ""}, {"option_id": "96605dc9-2d0b-4077-9e62-885b03252f37", "content": "The patient forgot to take the prescribed medication.", "image_url": ""}], "answer": null}, {"question_id": "2f4f58f1-982a-4894-85b6-14d71b2c3421", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. Why does the speaker suggest moving to the US?\u00a0\u00a0</p><p><br /></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SMALL_TALK_14_What we really should do.mp3"}, "options": [{"option_id": "1f5ccac5-0ae8-4f51-ad54-e11ac89e244f", "content": "Because they want to experience a different culture.", "image_url": ""}, {"option_id": "de5091be-1573-4798-a584-b677efa4cb58", "content": "Because they believe it's the best place to learn English.", "image_url": ""}, {"option_id": "970229bf-93c7-4880-86a5-e4f240e311ad", "content": "Because they can't rely on speaking their native language.", "image_url": ""}, {"option_id": "9709cb14-235f-4c67-8f89-ea5933ea0fd9", "content": "Because they want to pursue higher education opportunities.", "image_url": ""}], "answer": null}, {"question_id": "4445e116-d611-46a8-89fd-e94078762c26", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 11, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p><em>In recent years, birthday parties have become more elaborate. Sarah remarked: \"My daughter's party was a huge success. We've incorporated elements of her favorite movie, creating a magical atmosphere.\u201d She reported that her daughter had been thrilled with the surprise and added: \"The party planners have done an incredible job, ensuring every detail was perfect.\" The room was decorated with flower-shaped pink plastic balloons.</em></p><p><br /></p><p>What aspect of Sarah's daughter's party did she particularly praise?</p>", "media": null, "options": [{"option_id": "11e6e860-6fd2-4e4c-8b17-9a0d4e825de2", "content": "The variety of food options available for the guests.", "image_url": ""}, {"option_id": "e62b4f99-b804-47da-942c-2ccbeaf8d26d", "content": "The entertainment provided by a professional magician.", "image_url": ""}, {"option_id": "01689d95-f9c4-4f61-875f-cf9b65722598", "content": "The inclusion of elements from her daughter's favorite movie.", "image_url": ""}, {"option_id": "88de1b58-9c62-40c4-a41c-5c7eb9270b9b", "content": "The interactive games and activities organized for the children.", "image_url": ""}], "answer": null}, {"question_id": "9b5a7807-7160-4fd1-b569-ea993c9fe9bc", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 12, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p><strong>Cashier: </strong>Good afternoon! Did you find everything you were looking for today?</p><p><strong>Customer: </strong>Yes, I did, thank you. I'm glad you have these items in bulk.</p><p><strong>Cashier: </strong>Absolutely! Will you be paying with cash or a card today?</p><p><strong>Customer:</strong> I'll pay with my card, please. Also, are the imposed levies included in the total?</p><p><strong>Cashier: </strong>Yes, the levies are included in the total amount.</p><p><br /></p><p>Based on the dialogue, what can be inferred about the items purchased?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "7b2dbd9c-3f7d-462f-9cda-3703483312ff", "content": "They are individually packaged.", "image_url": ""}, {"option_id": "c79fd470-49cc-4001-bf95-c365d852497a", "content": "They are sold at a discounted price.", "image_url": ""}, {"option_id": "8578149b-12e4-4c88-ae9c-8d9c9704d810", "content": "They are sold only at retail.", "image_url": ""}, {"option_id": "5b072957-8f95-46a4-8abe-ef2e88f738ab", "content": "They are included in the total amount.", "image_url": ""}], "answer": null}, {"question_id": "e1f93952-871f-4620-987c-c0703db6731b", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 13, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>When I was at the market buying purple cereal with the shape of stars, I accidentally ran into an old white-haired and blue-eyed woman wearing a chic bag from Italy made of leather.</p><p><br /></p><p>Which alternative contains the right word order? </p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "411b8fc8-47d3-4f72-8121-ce5f00e6d223", "content": "shape of star purple cereals.", "image_url": ""}, {"option_id": "c68933c3-c7a7-4a56-89b9-76c8612b2089", "content": "star-shaped purple cereals.", "image_url": ""}, {"option_id": "9cf21a8d-472c-438e-b4c4-67cf7775721f", "content": "cereal purple star-shaped.", "image_url": ""}, {"option_id": "4ffeee71-4e18-4a36-99b1-fd4d5054409d", "content": "purple star-shaped cereal. ", "image_url": ""}], "answer": null}, {"question_id": "9697bcaf-e2f7-4324-a16f-06d5f95114a7", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 14, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. Which word below is a suitable substitute for \"can't stand,\" \"can't tolerate,\" and \"endure\"?</p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/AUTOCORRECT_15_She said she couldn't.mp3"}, "options": [{"option_id": "59e74a83-d153-4a01-b49b-dd21adaa356b", "content": "Bear.", "image_url": ""}, {"option_id": "0fa68a9d-527f-474b-949f-3b4314fe09c4", "content": "Accept.", "image_url": ""}, {"option_id": "3cfe774b-efa9-44b5-bb63-3ca67428bb36", "content": "Bare.", "image_url": ""}, {"option_id": "9fecd0a9-89ca-484b-a6a6-4301a58c1e19", "content": "Deal.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "949cf516-1405-47e0-87b9-457b4f4f5d80", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 15, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to\u00a0audio. Who is he probably talking to?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SHADOWING_U15_It's_already_7_pm.mp3"}, "options": [{"option_id": "8bd930ff-cd66-4f7f-9ef0-f3602e1112f9", "content": "His co-workers.", "image_url": ""}, {"option_id": "a3bb940c-4fae-407c-b9e0-e9deba7f2cf1", "content": "His managers.", "image_url": ""}, {"option_id": "665a4a36-85fc-475f-a1a1-f8b0797478f9", "content": "His students.", "image_url": ""}, {"option_id": "45bd7cef-c592-436a-af48-6723b1d0249c", "content": "His friends.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "a282f6e0-6824-433c-b8ab-48944024d6fd", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 16, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>How would you respond when someone suggests that something bad could happen to you, and you want to avoid bad luck?</p><p><br /></p>", "media": null, "options": [{"option_id": "77ba6270-4877-4aa4-b599-8a331a5ff5f6", "content": "Break a leg!\u00a0", "image_url": ""}, {"option_id": "21528332-ac49-4b44-8388-600100a88955", "content": "Fingers crossed!\u00a0", "image_url": ""}, {"option_id": "6b0fa7d5-8a72-44b5-b811-b279d6cbfd4c", "content": "Don\u2019t jinx me!\u00a0", "image_url": ""}, {"option_id": "d6c5121d-5c0c-4722-b2cf-ad57661fb37c", "content": "Bring it on", "image_url": ""}], "answer": null}, {"question_id": "f89f5f8b-ad5b-4409-b69d-767b8f3582e2", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 17, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>When I was a kid, I used to prepare everything to receive Santa in my house. I would even wear my reindeer-Christmas-themed fluffy pajamas. And there was this specific day when I was dressing my dog Brutus as a mini reindeer with antlers and stuff, my mother came by with a stifled laugh and said: \u201cWhat you doing\u201d?, I replied: \"I am setting a trap for Santa Claus! When he sees Brutus, he will think it's a lost reindeer and will come into the house to get him!\u201d</p><p><br /></p><p>Based on the text, which activity was a past habit of the narrator?</p><p><br /></p>", "media": null, "options": [{"option_id": "a8b42d26-c729-4394-b41e-a89e2deff6ea", "content": "Dressing the dog as a reindeer.", "image_url": ""}, {"option_id": "6211d717-382d-45d2-9ea4-762af568cec2", "content": " Wearing themed, fluffy pajamas.", "image_url": ""}, {"option_id": "c4915d7f-820a-4498-a059-0c267a9ca09c", "content": "Setting traps for Santa Claus.", "image_url": ""}, {"option_id": "9b4f1e22-5336-46b2-8a03-bea1db12c90b", "content": " Receiving presents from Santa Claus.", "image_url": ""}], "answer": null}, {"question_id": "e0540fa7-287d-42c0-b4cb-34543dca632b", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 18, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the alternative that correctly rewrites the underlined sentence: </p><p><br /></p><p><u>I didn\u2019t know that by moving away,</u><strong> </strong>\u00a0I would embark on a journey of self-discovery and cultural immersion.</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "5d0c9e52-dc90-4285-9722-3adb17426c25", "content": "Little I knew that by moving away to learn English\u2026", "image_url": ""}, {"option_id": "7e591878-2d9f-4f6f-8f7a-a1527b8cff11", "content": "Little did I know that by moving away to learn English\u2026", "image_url": ""}, {"option_id": "51573e95-422b-4aa8-8c5f-9449e54cbe49", "content": "Little didn\u2019t I know that by moving away to learn English\u2026", "image_url": ""}, {"option_id": "9a208beb-cd59-4a37-92d6-636ff02ff328", "content": "I did know little that by moving away to learn English\u2026", "image_url": ""}], "answer": null}, {"question_id": "d36f444f-7887-4387-92c5-5907b4edbcce", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 19, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio and choose the word you hear.</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/Audio 07 Pronunciation Hacks.mp3"}, "options": [{"option_id": "7f1d9ac0-59e5-4cc5-9cf8-59403c7bf1b8", "content": "calming.", "image_url": ""}, {"option_id": "9510d1fa-48bb-431c-8f56-e2a270614f25", "content": "counted.", "image_url": ""}, {"option_id": "4914c1cd-4728-4bf7-ac7e-ac4163dbcbf6", "content": "recipe.", "image_url": ""}, {"option_id": "80ea2d60-f55b-4512-ba40-5bc317c1a971", "content": "despot.", "image_url": ""}], "answer": null}, {"question_id": "a9e4c7fd-cb98-4c55-bd36-777487cabdb2", "assessment_id": "1cdb1c7b-6ccf-47a4-b1ec-4c00508ce678", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 20, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Learning a new language is like embarking on a transformative journey. As we navigate through different cultures, our perspectives broaden and evolve. It's not just about mastering vocabulary; it's about immersing ourselves in a new way of thinking and communicating. In a nutshell, when we open ourselves up to this experience, we discover that language learning is not merely a task but a profound opportunity for personal growth.</p><p><br /></p><p>What does the passage primarily emphasize?</p><p><br /></p>", "media": null, "options": [{"option_id": "abd1333b-a72e-4fbd-b023-001cd517d558", "content": "The importance of embarking on journeys.\u00a0", "image_url": ""}, {"option_id": "9292aa1d-f233-4525-a703-fd46a819550a", "content": "The necessity of getting through language barriers.", "image_url": ""}, {"option_id": "c3c997b6-a6a3-4a3a-a8be-b11b257d6e60", "content": "The significance of mastering new vocabulary.", "image_url": ""}, {"option_id": "c093cdd8-5871-4c5f-8e2c-4bbff30c82e5", "content": "The profound impact of language learning.\u00a0", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

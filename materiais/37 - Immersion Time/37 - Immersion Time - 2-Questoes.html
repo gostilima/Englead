@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "746f4911-8a76-4fa8-ba8c-d6528a303e0c", "assessment_id": "9977cf60-be48-42be-943c-5c0033a0f080", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Voc\u00ea est\u00e1 se deliciando com um sorvete, e v\u00ea seu irm\u00e3o mais novo observando. Para oferecer, voc\u00ea diz\u2026</p>", "media": null, "options": [{"option_id": "9bbb7927-2f28-48c3-929f-2eb66ef36ce2", "content": "Wanna join us?", "image_url": ""}, {"option_id": "93e21b1c-9838-42ec-8a6c-8f2a24cad3af", "content": "Did you like it?", "image_url": ""}, {"option_id": "513f191f-2cf6-4522-8bd3-3cdee39979b8", "content": "Want some?", "image_url": ""}, {"option_id": "951d7f45-b8eb-48a4-8f11-a60dde970c80", "content": "Are you up for that?", "image_url": ""}], "answer": null}, {"question_id": "359f97d9-d2fe-43f0-acd7-d59a634fbe14", "assessment_id": "9977cf60-be48-42be-943c-5c0033a0f080", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Algu\u00e9m te oferece uma comida que voc\u00ea n\u00e3o gosta muito. As frases a seguir s\u00e3o jeitos educados de recusar, EXCETO\u2026</p>", "media": null, "options": [{"option_id": "8d27a3aa-7228-4d57-afcd-70a7f732814e", "content": "I\u2019m in, thank you!", "image_url": ""}, {"option_id": "495b2ffb-8ab7-4f00-9c35-fdddcfcb42b9", "content": "I\u2019m alright, thanks!", "image_url": ""}, {"option_id": "d1ee6f74-42a3-45cd-af23-ea426f299243", "content": "I\u2019m good, thank you!", "image_url": ""}, {"option_id": "35c826be-afe2-4f6f-8f0b-be5d5d6558ac", "content": "No, thank you!", "image_url": ""}], "answer": null}, {"question_id": "5bdbb105-0fb1-4543-aeaf-ad8b253e1df5", "assessment_id": "9977cf60-be48-42be-943c-5c0033a0f080", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Uma maneira gentil de evitar o convite que voc\u00ea ouve no \u00e1udio \u00e9\u2026</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17019676424734614_06_Wanna_go_to_a_party_tonigh.mp3"}, "options": [{"option_id": "d2223e65-522b-46a7-a438-193af4cb3654", "content": "I\u2019ll see if I can drop by!", "image_url": ""}, {"option_id": "3a97cccf-8c2a-45eb-8516-767892c4bb32", "content": "Sweet!", "image_url": ""}, {"option_id": "dcd4e186-787c-4e27-a212-d004353e0cc5", "content": "I\u2019m afraid.", "image_url": ""}, {"option_id": "18baefa6-1b92-4de3-9df4-2d98cd06eff8", "content": "Where is it?", "image_url": ""}], "answer": null}, {"question_id": "b2de7997-9da8-4048-8337-a8d01e166176", "assessment_id": "9977cf60-be48-42be-943c-5c0033a0f080", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>A frase que voc\u00ea ouve no \u00e1udio \u00e9 uma boa resposta para qual desses convites/ofertas?</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17019676447405329_14_Im_in_Count_me_in.mp3"}, "options": [{"option_id": "91c2a229-642c-4692-bd59-646f7e2fd5f8", "content": "Would you like some pie?", "image_url": ""}, {"option_id": "fd590b1b-ad19-45df-aa0d-c4520a8f28bb", "content": "Do you want me to take you there?", "image_url": ""}, {"option_id": "d60ac84b-454d-4391-94be-125be696a133", "content": "Do you want to try this cookie?", "image_url": ""}, {"option_id": "306a04e6-e763-4042-a775-64bf9dfbb171", "content": "Are you up for a barbecue?", "image_url": ""}], "answer": null}, {"question_id": "8468851e-d29a-4303-877f-75cf34b047c8", "assessment_id": "9977cf60-be48-42be-943c-5c0033a0f080", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Qual das alternativas N\u00c3O \u00e9 uma maneira de aceitar o convite que voc\u00ea ouve no \u00c1udio?</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17019676469283314_12_Wanna_play_with_us_Do_you_w.mp3"}, "options": [{"option_id": "eaf249b9-07f9-443d-8dd9-3771d6047a63", "content": "I\u2019m down! Thanks!", "image_url": ""}, {"option_id": "11f1e030-8bfc-484b-ad9c-8f5940697518", "content": "I\u2019m good, thanks!", "image_url": ""}, {"option_id": "20128317-8d9c-49e4-818b-58c99c9289f5", "content": "I\u2019m up for it!", "image_url": ""}, {"option_id": "45da8379-5ba8-4054-b8d0-a9873300f0af", "content": "Let\u2019s do it!", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

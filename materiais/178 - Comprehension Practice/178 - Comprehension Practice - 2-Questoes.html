@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "d2278ac5-7371-4f35-ba9a-891ed89cbc2a", "assessment_id": "03272838-cf7b-4d89-993d-661b0d9caa56", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>\u201cI passed out seeing the umbilical cord of a baby for the first time.\u201d</p><p><br /></p><p>What other words <strong>couldn\u2019t</strong> replace \u201cpass out\u201d?</p>", "media": null, "options": [{"option_id": "3f431615-7c59-4f1a-bcc9-be08966acb17", "content": "to faint.", "image_url": ""}, {"option_id": "07664f7b-5e0e-4468-9e6e-a544fa12836a", "content": "to pass away. ", "image_url": ""}, {"option_id": "547f4cb4-f109-404e-aa35-4c0e79224257", "content": "to lose consciousness.", "image_url": ""}, {"option_id": "72ca9a18-b075-4111-ab78-2e78d515e9eb", "content": "to black out.", "image_url": ""}], "answer": null}, {"question_id": "bfce44d0-71f3-4bc0-8dc8-643d0e45f783", "assessment_id": "03272838-cf7b-4d89-993d-661b0d9caa56", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio and choose the most suitable answer for the question.</p><p><br></p><p><br></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/media/audio/1723832878803137_01_What_brought_you_to_the_dec.mp3"}, "options": [{"option_id": "7fc8c3df-28c1-4a57-a491-5491ec51296c", "content": "Yes, I graduated as a nurse 2 years ago. ", "image_url": ""}, {"option_id": "939caa34-8fda-4e79-bc8c-dec6ba68d072", "content": "Movies brought me to the decision of becoming a doctor. ", "image_url": ""}, {"option_id": "ea6776e4-45c1-45bb-be5b-9d5aac69abb3", "content": "Because I give medicines when people faint. ", "image_url": ""}, {"option_id": "ac66e263-f6d7-4f8f-99ce-2b5c77bda8c6", "content": "Well, I really don\u2019t know what made me interested in becoming a nurse. ", "image_url": ""}], "answer": null}, {"question_id": "d865cf2d-1c2d-4af4-b9a4-3d10e5ebb55a", "assessment_id": "03272838-cf7b-4d89-993d-661b0d9caa56", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Read the dialogue and answer the question.</p><p><br></p><p>Robert:&nbsp; You know what?! You're gonna think I'm crazy, but I love watching a chest tube being placed.&nbsp;</p><p>Josh: Gnarly!!! For sure you are. I fainted twice the last time I watched it.</p><p>What Josh said expressed: </p><p><br></p><p><br></p><p><br></p>", "media": null, "options": [{"option_id": "79a39d9a-f675-45a0-a174-ec872d5c74be", "content": "enthusiasm and excitement.", "image_url": ""}, {"option_id": "b3c17cca-a44b-46ed-aaf0-bcd2ef327d82", "content": "confusion and curiosity.", "image_url": ""}, {"option_id": "e7ce1f74-56eb-45aa-ab4d-6a3ec5cd7a42", "content": "Discomfort and queasiness.  ", "image_url": ""}, {"option_id": "84b7749e-7245-4394-b7bd-e68cef96a0a1", "content": "indifference and disinterest.", "image_url": ""}], "answer": null}, {"question_id": "2a269bfd-f049-41b3-b75e-ec7053bb0c8b", "assessment_id": "03272838-cf7b-4d89-993d-661b0d9caa56", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio. How would you rephrase it?&nbsp;</p><p><br></p><p><br></p><p><br></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/media/audio/1723832883929174_013_SMALL_TALK_I_know_this_professioin_can_be_taxing.mp3"}, "options": [{"option_id": "0d850d1e-0f40-4b1c-bc53-8dabada79e86", "content": "I understand this job is demanding but please don\u2019t keep your feelings to yourself. I\u2019m here for you.  ", "image_url": ""}, {"option_id": "6c887a16-c999-4467-9923-21ffaa90c6a1", "content": "I know this profession is easy, but share your feelings, and maybe I\u2019ll listen to you. ", "image_url": ""}, {"option_id": "172b370e-4d3d-461a-83f7-956e629beaad", "content": "I know this job can be hard, but don't hesitate to keep your feelings to yourself. You can count on me anyway.", "image_url": ""}, {"option_id": "751c09cc-d045-40a8-a2ad-9af1ca943eb4", "content": "I understand that this job can be mentally draining, but please keep your emotions to yourself. Don\u2019t expect help from me ", "image_url": ""}], "answer": null}, {"question_id": "2aa97e6e-77e5-42ea-9d85-7bccdc0f1257", "assessment_id": "03272838-cf7b-4d89-993d-661b0d9caa56", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>&nbsp;The hardest days are when people just keep ______&nbsp; and all I can think about is&nbsp; _________ and going home to get some rest. </p><p><br></p><p><br></p>", "media": null, "options": [{"option_id": "e24678be-03f5-4f6a-9d43-cc8b74614f75", "content": "Checking out / checking in.", "image_url": ""}, {"option_id": "3c7f9365-1955-49d2-b0da-01b41d6f9f32", "content": "Checking in/ checking out.", "image_url": ""}, {"option_id": "6fe9227b-a594-49d6-a5b6-9ad808bebb7b", "content": "checking out/ checking out.", "image_url": ""}, {"option_id": "3910a686-6e55-43bb-bfed-17df7fc92fe4", "content": "checking in / checking in.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

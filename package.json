@@ -1,0 +1,13 @@
+{
+  "name": "engleap-root",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "srs-app"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=srs-app",
+    "build": "npm run build --workspace=srs-app",
+    "lint": "npm run lint --workspace=srs-app"
+  }
+}

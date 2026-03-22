@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "920b50fc-e4cc-4e5f-846b-eff98bcd8e69", "assessment_id": "5341f940-cb7d-4132-846e-731fcd404848", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the statement that expresses a form of disagreement:</p><p><br></p>", "media": null, "options": [{"option_id": "8fe90b45-0e72-4bff-8d88-4538087164e1", "content": "\"Absolutely, that's precisely what I think too.\"", "image_url": ""}, {"option_id": "680b5d8f-2484-4398-add9-4359572dace3", "content": "\"It's possible, but I haven't really considered it much.\"", "image_url": ""}, {"option_id": "cebb9263-b826-466c-a73c-42fb703bdbda", "content": "\"Yeah, that sounds about right to me.\"", "image_url": ""}, {"option_id": "9edbc931-2139-451f-be73-b5d310d0089e", "content": "\"I'm not entirely sold on that idea, to be honest.\"", "image_url": ""}], "answer": null}, {"question_id": "1fa14129-5df7-4743-a2fb-7770dcb76941", "assessment_id": "5341f940-cb7d-4132-846e-731fcd404848", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Read the following dialog:</p><p><br></p><p>Haydan: The Padawan braid, yeah, I did like that.</p><p>Ewan: Me too.</p><p>Haydan: But mainly because you made it look cool on Episode I.</p><p>Ewan: Yeah. <strong>It's an interesting idea, isn't it?</strong></p><p><br></p><p><br></p><p>The purpose of the last sentence is to:</p><p><br></p>", "media": null, "options": [{"option_id": "7a3f7293-fb3a-4b1b-9a1e-c1690559f1c7", "content": "Request validation or agreement.", "image_url": ""}, {"option_id": "93851fe6-4603-43c3-9b00-e41271b285c8", "content": "Clarify a misunderstanding.", "image_url": ""}, {"option_id": "1db822e9-e37f-41ac-be70-080ef06efb85", "content": "Conclude the conversation faster.", "image_url": ""}, {"option_id": "cb42eb79-3c8a-4e2a-b76c-e988d8df5e92", "content": "Introduce a different topic in the conversation.", "image_url": ""}], "answer": null}, {"question_id": "02c9ebe7-fbfa-430f-b5b1-363f8f93ab30", "assessment_id": "5341f940-cb7d-4132-846e-731fcd404848", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analyze the following dialogue:</p><p><br></p><p>Becky: Pineapple on pizza is delicious.</p><p>Hayden: It depends. I've had pineapple with jalape\u00f1o on the pizza and it's a great combination.</p><p>Ewan: I don't know. I don't think I've ever ordered...</p><p>According to Ewan\u2019s statement, he is:</p><p><br></p>", "media": null, "options": [{"option_id": "bf994fd7-76a3-470c-8cf7-69b18a263b14", "content": "Showing he's unsure or lacks experience.", "image_url": ""}, {"option_id": "b43422f6-1ed1-47a8-be31-6561da0a53a7", "content": "Supporting Hayden's experience.", "image_url": ""}, {"option_id": "4005d0bc-2c5a-4311-88c4-eeb08c421cc9", "content": "Disagreeing with Hayden.", "image_url": ""}, {"option_id": "f720ec09-6ae8-4761-b224-26b848b7e37c", "content": "Agreeing with Becky.", "image_url": ""}], "answer": null}, {"question_id": "942d4947-6046-4ae9-9ea3-9e94dd4ebfce", "assessment_id": "5341f940-cb7d-4132-846e-731fcd404848", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio. Select the option that could answer the question made using a form of agreement:</p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/media/audio/1723660529003629_Fluency-M03-FH-U13---AUDIO-01.mp3"}, "options": [{"option_id": "e4f5cdf3-bdf1-4b69-9484-d0558fe78dd4", "content": "We can\u2019t say that.", "image_url": ""}, {"option_id": "fb46ba65-e9bc-4127-99f4-efbfece41eee", "content": "Really?", "image_url": ""}, {"option_id": "2eee895c-6bf6-4bcc-9005-c57e101a2fdf", "content": "It depends.", "image_url": ""}, {"option_id": "5afe0e9a-6de0-4a31-ab50-ccb3ac56e911", "content": "Feels that way.", "image_url": ""}], "answer": null}, {"question_id": "d2c52cdf-8558-4fac-839a-306f16671cab", "assessment_id": "5341f940-cb7d-4132-846e-731fcd404848", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio. Select the option that presents the word used to emphasize the agreement in the sentence.</p><p><br></p><p><br></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/media/audio/17236605314858053_Fluency-M03-FH-U13---AUDIO-02.mp3"}, "options": [{"option_id": "544862be-4dca-4c84-aa57-15a980796dfa", "content": "like", "image_url": ""}, {"option_id": "f9a0f63d-efd8-485d-95f0-7f2b35d0aa42", "content": "did", "image_url": ""}, {"option_id": "0e552dea-94ae-41bf-b7f5-4356d0aa1b24", "content": "movie", "image_url": ""}, {"option_id": "d9635a10-7fd6-4f03-aed5-ee05a7be7f4c", "content": "that", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

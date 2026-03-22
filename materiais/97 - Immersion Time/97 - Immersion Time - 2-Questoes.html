@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #042A35;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "b1695f92-f283-489d-8082-f92543f1f8f7", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Voc\u00ea acabou de se mudar para um outro pa\u00eds com um novo fuso hor\u00e1rio e agora tem uma nova rotina. Sua fam\u00edlia te liga perguntando como v\u00e3o as coisas, e voc\u00ea diz que est\u00e1 se acostumando com a nova rotina. Como voc\u00ea diria isso em ingl\u00eas?</p>", "media": null, "options": [{"option_id": "48550eea-edc5-43b6-a19d-ae32843174d4", "content": "I'm learning the new routine.", "image_url": ""}, {"option_id": "ff5f86d8-798b-4355-b2a6-32c7b88c685f", "content": "I\u2019m getting used to the new routine.", "image_url": ""}, {"option_id": "f487deaf-1c1d-4960-b734-3d67eb3f73ee", "content": "I'm becoming used to the new routine.", "image_url": ""}, {"option_id": "9dac83ba-ec60-41e3-9cca-a5c919728b6b", "content": "I'm learning to cope with the new routine.", "image_url": ""}], "answer": null}, {"question_id": "64d89bd8-f036-4e17-851d-7adfbc5f3524", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Felipe _____ new cultural traditions, such as watching the SuperBowl with friends.</p>", "media": null, "options": [{"option_id": "55f8c528-417b-449d-960b-d762fba11e17", "content": "lost", "image_url": ""}, {"option_id": "4996e336-8271-4983-b470-06e8ef104d41", "content": "rejected", "image_url": ""}, {"option_id": "0be42b3a-8c62-4c4d-a3bf-5f1c58370a5b", "content": "embraced", "image_url": ""}, {"option_id": "94032f52-ea25-419f-90d3-451b29a2472b", "content": "understood", "image_url": ""}], "answer": null}, {"question_id": "3097efae-82bc-456a-b517-6c27ce5582d8", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como voc\u00ea diria \u201cSinto que n\u00e3o me encaixo nesta cidade\u201d em ingl\u00eas?</p>", "media": null, "options": [{"option_id": "1f92c478-fc63-469b-be1b-6e26ba62a949", "content": "I feel like I don\u2019t plug in this city.", "image_url": ""}, {"option_id": "d724fc12-22d8-465e-9f76-54ea28c8c0d4", "content": "I feel like I don\u2019t fit in in this city.", "image_url": ""}, {"option_id": "b9a756e6-d4ec-4f45-b0b4-f2a4c3063cfc", "content": "I feel like I don\u2019t stand out in this city.", "image_url": ""}, {"option_id": "a8894f92-0650-4320-862b-c3503445ec96", "content": "I feel like I don\u2019t blend in in this city.", "image_url": ""}], "answer": null}, {"question_id": "f43f29ba-dfc8-4113-bac2-3f62a76c3d13", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Felipe _____ new cultural traditions, such as watching the SuperBowl with friends.</p>", "media": null, "options": [{"option_id": "55c0aff9-0935-4d37-afe8-c4b41b9f6766", "content": "rejected", "image_url": ""}, {"option_id": "6d3f97fb-9f51-4a4f-be78-b287a7630ec0", "content": "lost", "image_url": ""}, {"option_id": "507a0b99-4df7-47e5-bf6c-2e989177824b", "content": "embraced", "image_url": ""}, {"option_id": "d28ac52f-eee0-4a1b-bb50-3d44d62bf444", "content": "understood", "image_url": ""}], "answer": null}, {"question_id": "fa747932-6145-4cc0-9489-2adc434cce8e", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>In the _____ phase, everything is wonderful.</p>", "media": null, "options": [{"option_id": "e3b43e89-fdaf-4976-90dd-688b3b972ed4", "content": "adjustment", "image_url": ""}, {"option_id": "e106bca5-be29-45d2-ba31-a291e535ca7a", "content": "honeymoon", "image_url": ""}, {"option_id": "9f31ec6c-40c3-43a0-9e0f-73b5509238c5", "content": "negotiation", "image_url": ""}, {"option_id": "af99da9c-19b4-46fe-b180-9ab4d97cf57a", "content": "adaptation", "image_url": ""}], "answer": null}, {"question_id": "a777c84f-5440-4690-8869-d6181a83235f", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>During the negotiation phase, you might go through some _____ experiences, such as homesickness and communication flaws.</p>", "media": null, "options": [{"option_id": "db77c052-60eb-4e1e-9373-fab8da3b923e", "content": "frustrating", "image_url": ""}, {"option_id": "cf59aec4-2c9e-4d70-8e7f-216ecad6d280", "content": "wonderful", "image_url": ""}, {"option_id": "881a8113-0665-4365-9431-063568c3d08d", "content": "positive", "image_url": ""}, {"option_id": "ec10d8b8-23a2-4b3d-b900-bade51e69def", "content": "exciting", "image_url": ""}], "answer": null}, {"question_id": "d72316f0-a73e-454a-bed7-efd5e850dfc9", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Which option is an example of adjustment to a new culture?</p>", "media": null, "options": [{"option_id": "cb34e492-a201-4bf6-8934-d1afc655fc14", "content": "Getting used to a new routine.", "image_url": ""}, {"option_id": "2a1babe2-1a78-4d8f-bc7c-5f32d6b1d3b5", "content": "Feeling like you\u2019ll never fit in.", "image_url": ""}, {"option_id": "59af4a17-4f41-4c48-8c24-75242923fb7d", "content": "Falling in love with the local life.", "image_url": ""}, {"option_id": "049addf7-4fb5-42de-bb4d-19246c071c96", "content": "Absorbing a completely new culture.", "image_url": ""}], "answer": null}, {"question_id": "cf9e9a74-b97a-4a32-a45b-d67a236e34b6", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>A good strategy to adapt to a new culture is:</p>", "media": null, "options": [{"option_id": "0a26bf0a-dc25-495b-a8f5-a2f7a5802d44", "content": "Closing yourself off from people.", "image_url": ""}, {"option_id": "e99cc74c-3c34-4a97-b665-e3f67e7bd4e3", "content": "Staying in your comfort zone.", "image_url": ""}, {"option_id": "d86d7b33-5e47-449e-b850-b8d3fbf90750", "content": "Trying to hide your accent.", "image_url": ""}, {"option_id": "74403c79-145c-49f0-851d-fce73cd50fc5", "content": "Exploring the city as much as you can.", "image_url": ""}], "answer": null}, {"question_id": "394d19b1-8417-4f15-a993-78d85c4b5102", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Qual alternativa \u00e9 outra maneira de dizer \u201cI know all the ins and outs of this neighborhood\u201d?</p>", "media": null, "options": [{"option_id": "fc4a7707-f741-41f2-83ec-c34d29fc3c53", "content": "I know all the dangerous parts of this neighborhood.", "image_url": ""}, {"option_id": "aa97bb49-8391-403f-a40f-f3a94d61891a", "content": "I know all the free clubs in this neighborhood.", "image_url": ""}, {"option_id": "ba7bc720-d773-4454-ba41-c8d4ae299602", "content": "I know all the details of this neighborhood.", "image_url": ""}, {"option_id": "18c85362-a261-4f23-8b2e-bd3d69a358d4", "content": "I know all the diners in this neighborhood.", "image_url": ""}], "answer": null}, {"question_id": "17b16eca-8cd0-4977-8bc6-0ad394c7df66", "assessment_id": "66087759-e44a-406f-98f2-404665b9f77d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como voc\u00ea completaria a frase para explicar o que \u00e9 choque cultural em ingl\u00eas? Cultural shock is an experience we may have when\u2026</p>", "media": null, "options": [{"option_id": "f304ef2c-ed71-475e-beff-dd6aca0c0add", "content": "getting in touch with a culture that is different from our own.", "image_url": ""}, {"option_id": "f2a0ea3e-1451-491e-bfbb-26ce47c26adc", "content": "feeling completely comfortable with a different culture.", "image_url": ""}, {"option_id": "305885cc-7982-4fe2-a3d2-0caf5f9144a5", "content": "traveling to the same place many times a year.", "image_url": ""}, {"option_id": "7d70167b-6350-4b0d-9a51-0bc169494969", "content": "interacting with people from our own culture.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

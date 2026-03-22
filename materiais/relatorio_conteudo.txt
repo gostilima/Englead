@@ -1,0 +1,1108 @@
+Relatório de 'input\Fluency Academy - Ingles 2025 + MemHack':
+Total de diretórios: 267
+Total de arquivos: 837
+
+├───📁 01 - Welcome/
+│   ├───📄 01 - Welcome - 1.mp4
+├───📁 02 - Level Check/
+│   ├───📄 02 - Level Check - 1-Questoes.html
+├───📁 03 - Comprehension Practice/
+│   ├───📄 03 - Comprehension Practice - 1.mp4
+│   ├───📄 03 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 03 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 04 - Pronunciation Hacks/
+│   ├───📄 04 - Pronunciation Hacks - 1.mp4
+│   ├───📄 04 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 04 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 05 - Grammar Hacks (Part I)/
+│   ├───📄 05 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 05 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 05 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 06 - Grammar Hacks (Part II)/
+│   ├───📄 06 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 06 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 06 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 07 - Immersion Time/
+│   ├───📄 07 - Immersion Time - 1.mp4
+│   ├───📄 07 - Immersion Time - 2-Questoes.html
+│   ├───📄 07 - Immersion Time - 3-MemhackDeck.html
+├───📁 08 - Vocab Rocket - Part I/
+│   ├───📄 08 - Vocab Rocket - Part I - 1.mp4
+│   ├───📄 08 - Vocab Rocket - Part I - 2-Questoes.html
+│   ├───📄 08 - Vocab Rocket - Part I - 3-MemhackDeck.html
+├───📁 09 - Vocab Rocket - Part II/
+│   ├───📄 09 - Vocab Rocket - Part II - 1.mp4
+│   ├───📄 09 - Vocab Rocket - Part II - 2-Questoes.html
+│   ├───📄 09 - Vocab Rocket - Part II - 3-MemhackDeck.html
+├───📁 10 - Comprehension Practice/
+│   ├───📄 10 - Comprehension Practice - 1.mp4
+│   ├───📄 10 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 10 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 10 - Comprehension Practice - 4.mp4
+│   ├───📄 10 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 100 - Pronunciation Hacks/
+│   ├───📄 100 - Pronunciation Hacks - 1.mp4
+│   ├───📄 100 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 100 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 101 - Comprehension Practice/
+│   ├───📄 101 - Comprehension Practice - 1.mp4
+│   ├───📄 101 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 101 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 102 - Grammar Hacks (part I)/
+│   ├───📄 102 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 102 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 102 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 103 - Grammar Hacks (Part II)/
+│   ├───📄 103 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 103 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 103 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 104 - Immersion Time/
+│   ├───📄 104 - Immersion Time - 1.mp4
+│   ├───📄 104 - Immersion Time - 2-Questoes.html
+│   ├───📄 104 - Immersion Time - 3-MemhackDeck.html
+├───📁 105 - Language Hacks/
+│   ├───📄 105 - Language Hacks - 1.mp4
+│   ├───📄 105 - Language Hacks - 2-Questoes.html
+│   ├───📄 105 - Language Hacks - 3-MemhackDeck.html
+├───📁 106 - Writing practice/
+│   ├───📄 106 - Writing practice - 1.mp4
+│   ├───📄 106 - Writing practice - 2-MemhackDeck.html
+│   ├───📄 106 - Writing practice - 3-Questoes.html
+├───📁 107 - Pronunciation Hacks/
+│   ├───📄 107 - Pronunciation Hacks - 1.mp4
+│   ├───📄 107 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 107 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 108 - Comprehension Practice/
+│   ├───📄 108 - Comprehension Practice - 1.mp4
+│   ├───📄 108 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 108 - Comprehension Practice - 3-Questoes.html
+├───📁 109 - Grammar Hacks (part I)/
+│   ├───📄 109 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 109 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 109 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 11 - Grammar Hacks (Part I)/
+│   ├───📄 11 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 11 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 11 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 110 - Grammar Hacks (part II)/
+│   ├───📄 110 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 110 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 110 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 111 - Immersion Time/
+│   ├───📄 111 - Immersion Time - 1.mp4
+│   ├───📄 111 - Immersion Time - 2-Questoes.html
+│   ├───📄 111 - Immersion Time - 3-MemhackDeck.html
+├───📁 112 - Language Hacks/
+│   ├───📄 112 - Language Hacks - 1.mp4
+│   ├───📄 112 - Language Hacks - 2-Questoes.html
+│   ├───📄 112 - Language Hacks - 3-MemhackDeck.html
+├───📁 113 - Writing practice/
+│   ├───📄 113 - Writing practice - 1.mp4
+│   ├───📄 113 - Writing practice - 2-Questoes.html
+│   ├───📄 113 - Writing practice - 3-MemhackDeck.html
+├───📁 114 - Pronunciation Hacks/
+│   ├───📄 114 - Pronunciation Hacks - 1.mp4
+│   ├───📄 114 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 114 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 115 - Comprehension Practice/
+│   ├───📄 115 - Comprehension Practice - 1.mp4
+│   ├───📄 115 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 115 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 116 - Grammar Hacks (part I)/
+│   ├───📄 116 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 116 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 116 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 117 - Grammar Hacks (part II)/
+│   ├───📄 117 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 117 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 117 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 118 - Immersion Time/
+│   ├───📄 118 - Immersion Time - 1.mp4
+│   ├───📄 118 - Immersion Time - 2-Questoes.html
+│   ├───📄 118 - Immersion Time - 3-MemhackDeck.html
+├───📁 119 - Language Hacks/
+│   ├───📄 119 - Language Hacks - 1.mp4
+│   ├───📄 119 - Language Hacks - 2-Questoes.html
+│   ├───📄 119 - Language Hacks - 3-MemhackDeck.html
+├───📁 12 - Grammar Hacks (Part II)/
+│   ├───📄 12 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 12 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 12 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 120 - Writing practice/
+│   ├───📄 120 - Writing practice - 1.mp4
+│   ├───📄 120 - Writing practice - 2-Questoes.html
+│   ├───📄 120 - Writing practice - 3-MemhackDeck.html
+├───📁 121 - Pronunciation Hacks/
+│   ├───📄 121 - Pronunciation Hacks - 1.mp4
+│   ├───📄 121 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 121 - Pronunciation Hacks - 3-MemhackDeck.html
+│   ├───📄 121 - Pronunciation Hacks - 4-Questoes.html
+├───📁 122 - Comprehension Practice/
+│   ├───📄 122 - Comprehension Practice - 1.mp4
+│   ├───📄 122 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 122 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 123 - Grammar Hacks (part I)/
+│   ├───📄 123 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 123 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 123 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 124 - Grammar Hacks (part II)/
+│   ├───📄 124 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 124 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 124 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 125 - Immersion Time/
+│   ├───📄 125 - Immersion Time - 1.mp4
+│   ├───📄 125 - Immersion Time - 2-MemhackDeck.html
+│   ├───📄 125 - Immersion Time - 3-Questoes.html
+├───📁 126 - Language Hacks/
+│   ├───📄 126 - Language Hacks - 1.mp4
+│   ├───📄 126 - Language Hacks - 2-Questoes.html
+│   ├───📄 126 - Language Hacks - 3-MemhackDeck.html
+├───📁 127 - Writing practice/
+│   ├───📄 127 - Writing practice - 1.mp4
+│   ├───📄 127 - Writing practice - 2-Questoes.html
+│   ├───📄 127 - Writing practice - 3-MemhackDeck.html
+├───📁 128 - Pronunciation Hacks/
+│   ├───📄 128 - Pronunciation Hacks - 1.mp4
+│   ├───📄 128 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 128 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 129 - Comprehension Practice/
+│   ├───📄 129 - Comprehension Practice - 1.mp4
+│   ├───📄 129 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 129 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 13 - Immersion Time/
+│   ├───📄 13 - Immersion Time - 1.mp4
+│   ├───📄 13 - Immersion Time - 2-Questoes.html
+│   ├───📄 13 - Immersion Time - 3-MemhackDeck.html
+├───📁 130 - Grammar Hacks (part I)/
+│   ├───📄 130 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 130 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 130 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 131 - Grammar Hacks (part II)/
+│   ├───📄 131 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 131 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 131 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 132 - Immersion Time/
+│   ├───📄 132 - Immersion Time - 1.mp4
+│   ├───📄 132 - Immersion Time - 2-Questoes.html
+│   ├───📄 132 - Immersion Time - 3-MemhackDeck.html
+├───📁 133 - Language Hacks/
+│   ├───📄 133 - Language Hacks - 1.mp4
+│   ├───📄 133 - Language Hacks - 2-Questoes.html
+│   ├───📄 133 - Language Hacks - 3-MemhackDeck.html
+├───📁 134 - Writing practice/
+│   ├───📄 134 - Writing practice - 1.mp4
+│   ├───📄 134 - Writing practice - 2-Questoes.html
+│   ├───📄 134 - Writing practice - 3-MemhackDeck.html
+├───📁 135 - Pronunciation Hacks/
+│   ├───📄 135 - Pronunciation Hacks - 1.mp4
+│   ├───📄 135 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 135 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 136 - Comprehension Practice/
+│   ├───📄 136 - Comprehension Practice - 1.mp4
+│   ├───📄 136 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 136 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 137 - Grammar Hacks (part I)/
+│   ├───📄 137 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 137 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 137 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 138 - Grammar Hacks (part II)/
+│   ├───📄 138 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 138 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 138 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 139 - Immersion Time/
+│   ├───📄 139 - Immersion Time - 1.mp4
+│   ├───📄 139 - Immersion Time - 2-Questoes.html
+│   ├───📄 139 - Immersion Time - 3-MemhackDeck.html
+├───📁 14 - Pronunciation Hacks/
+│   ├───📄 14 - Pronunciation Hacks - 1.mp4
+│   ├───📄 14 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 14 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 140 - Language Hacks/
+│   ├───📄 140 - Language Hacks - 1.mp4
+│   ├───📄 140 - Language Hacks - 2-Questoes.html
+│   ├───📄 140 - Language Hacks - 3-MemhackDeck.html
+├───📁 141 - Writing practice/
+│   ├───📄 141 - Writing practice - 1.mp4
+│   ├───📄 141 - Writing practice - 2-Questoes.html
+│   ├───📄 141 - Writing practice - 3-MemhackDeck.html
+├───📁 142 - Pronunciation Hacks/
+│   ├───📄 142 - Pronunciation Hacks - 1.mp4
+│   ├───📄 142 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 142 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 143 - Comprehension Practice/
+│   ├───📄 143 - Comprehension Practice - 1.mp4
+│   ├───📄 143 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 143 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 144 - Grammar Hacks (part I)/
+│   ├───📄 144 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 144 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 144 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 145 - Grammar Hacks (part II)/
+│   ├───📄 145 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 145 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 145 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 146 - Immersion Time/
+│   ├───📄 146 - Immersion Time - 1.mp4
+│   ├───📄 146 - Immersion Time - 2-Questoes.html
+│   ├───📄 146 - Immersion Time - 3-MemhackDeck.html
+├───📁 147 - Language Hacks/
+│   ├───📄 147 - Language Hacks - 1.mp4
+│   ├───📄 147 - Language Hacks - 2-Questoes.html
+│   ├───📄 147 - Language Hacks - 3-MemhackDeck.html
+├───📁 148 - Writing practice/
+│   ├───📄 148 - Writing practice - 1.mp4
+│   ├───📄 148 - Writing practice - 2-Questoes.html
+│   ├───📄 148 - Writing practice - 3-MemhackDeck.html
+├───📁 149 - Pronunciation Hacks/
+│   ├───📄 149 - Pronunciation Hacks - 1.mp4
+│   ├───📄 149 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 149 - Pronunciation Hacks - 3-MemhackDeck.html
+│   ├───📄 149 - Pronunciation Hacks - 4-Questoes.html
+├───📁 15 - Vocab Rocket/
+│   ├───📄 15 - Vocab Rocket - 1.mp4
+│   ├───📄 15 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 15 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 150 - Comprehension Practice/
+│   ├───📄 150 - Comprehension Practice - 1.mp4
+│   ├───📄 150 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 150 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 151 - Grammar Hacks (part I)/
+│   ├───📄 151 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 151 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 151 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 152 - Grammar Hacks (part II)/
+│   ├───📄 152 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 152 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 152 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 153 - Immersion Time/
+│   ├───📄 153 - Immersion Time - 1.mp4
+│   ├───📄 153 - Immersion Time - 2-Questoes.html
+│   ├───📄 153 - Immersion Time - 3-MemhackDeck.html
+├───📁 154 - Language Hacks/
+│   ├───📄 154 - Language Hacks - 1.mp4
+│   ├───📄 154 - Language Hacks - 2-Questoes.html
+│   ├───📄 154 - Language Hacks - 3-MemhackDeck.html
+├───📁 155 - Writing practice/
+│   ├───📄 155 - Writing practice - 1.mp4
+│   ├───📄 155 - Writing practice - 2-Questoes.html
+│   ├───📄 155 - Writing practice - 3-MemhackDeck.html
+├───📁 156 - Pronunciation Hacks/
+│   ├───📄 156 - Pronunciation Hacks - 1.mp4
+│   ├───📄 156 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 156 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 157 - Comprehension Practice/
+│   ├───📄 157 - Comprehension Practice - 1.mp4
+│   ├───📄 157 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 157 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 158 - Grammar Hacks (part I)/
+│   ├───📄 158 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 158 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 158 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 159 - Grammar Hacks (part II)/
+│   ├───📄 159 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 159 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 159 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 16 - Comprehension Practice/
+│   ├───📄 16 - Comprehension Practice - 1.mp4
+│   ├───📄 16 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 16 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 16 - Comprehension Practice - 4.mp4
+│   ├───📄 16 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 160 - Immersion Time/
+│   ├───📄 160 - Immersion Time - 1.mp4
+│   ├───📄 160 - Immersion Time - 2-Questoes.html
+│   ├───📄 160 - Immersion Time - 3-MemhackDeck.html
+├───📁 161 - Language Hacks/
+│   ├───📄 161 - Language Hacks - 1.mp4
+│   ├───📄 161 - Language Hacks - 2-Questoes.html
+│   ├───📄 161 - Language Hacks - 3-MemhackDeck.html
+├───📁 162 - Writing practice/
+│   ├───📄 162 - Writing practice - 1.mp4
+│   ├───📄 162 - Writing practice - 2-Questoes.html
+│   ├───📄 162 - Writing practice - 3-MemhackDeck.html
+├───📁 163 - Pronunciation Hacks/
+│   ├───📄 163 - Pronunciation Hacks - 1.mp4
+│   ├───📄 163 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 163 - Pronunciation Hacks - 3-Questoes.html
+├───📁 164 - Comprehension Practice/
+│   ├───📄 164 - Comprehension Practice - 1.mp4
+│   ├───📄 164 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 164 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 165 - Grammar Hacks (part I)/
+│   ├───📄 165 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 165 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 165 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 166 - Grammar Hacks (part II)/
+│   ├───📄 166 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 166 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 166 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 167 - Immersion Time/
+│   ├───📄 167 - Immersion Time - 1.mp4
+│   ├───📄 167 - Immersion Time - 2-Questoes.html
+│   ├───📄 167 - Immersion Time - 3-MemhackDeck.html
+├───📁 168 - Language Hacks/
+│   ├───📄 168 - Language Hacks - 1.mp4
+│   ├───📄 168 - Language Hacks - 2-Questoes.html
+│   ├───📄 168 - Language Hacks - 3-MemhackDeck.html
+├───📁 169 - Writing practice/
+│   ├───📄 169 - Writing practice - 1.mp4
+│   ├───📄 169 - Writing practice - 2-Questoes.html
+│   ├───📄 169 - Writing practice - 3-MemhackDeck.html
+├───📁 17 - Grammar Hacks (Part I)/
+│   ├───📄 17 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 17 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 17 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 170 - Pronunciation Hacks/
+│   ├───📄 170 - Pronunciation Hacks - 1.mp4
+│   ├───📄 170 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 170 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 171 - Comprehension Practice/
+│   ├───📄 171 - Comprehension Practice - 1.mp4
+│   ├───📄 171 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 171 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 172 - Grammar Hacks (part I)/
+│   ├───📄 172 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 172 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 172 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 173 - Grammar Hacks (part II)/
+│   ├───📄 173 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 173 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 173 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 174 - Immersion Time/
+│   ├───📄 174 - Immersion Time - 1.mp4
+│   ├───📄 174 - Immersion Time - 2-Questoes.html
+│   ├───📄 174 - Immersion Time - 3-MemhackDeck.html
+├───📁 175 - Language Hacks/
+│   ├───📄 175 - Language Hacks - 1.mp4
+│   ├───📄 175 - Language Hacks - 2-Questoes.html
+│   ├───📄 175 - Language Hacks - 3-MemhackDeck.html
+├───📁 176 - Writing practice/
+│   ├───📄 176 - Writing practice - 1.mp4
+│   ├───📄 176 - Writing practice - 2-Questoes.html
+│   ├───📄 176 - Writing practice - 3-MemhackDeck.html
+├───📁 177 - Pronunciation Hacks/
+│   ├───📄 177 - Pronunciation Hacks - 1.mp4
+│   ├───📄 177 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 177 - Pronunciation Hacks - 3-MemhackDeck.html
+│   ├───📄 177 - Pronunciation Hacks - 4-Questoes.html
+├───📁 178 - Comprehension Practice/
+│   ├───📄 178 - Comprehension Practice - 1.mp4
+│   ├───📄 178 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 178 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 179 - Grammar Hacks (part I)/
+│   ├───📄 179 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 179 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 179 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 18 - Grammar Hacks (Part II)/
+│   ├───📄 18 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 18 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 18 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 180 - Grammar Hacks (part II)/
+│   ├───📄 180 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 180 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 180 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 181 - Immersion Time/
+│   ├───📄 181 - Immersion Time - 1.mp4
+│   ├───📄 181 - Immersion Time - 2-Questoes.html
+│   ├───📄 181 - Immersion Time - 3-MemhackDeck.html
+├───📁 182 - Language Hacks/
+│   ├───📄 182 - Language Hacks - 1.mp4
+│   ├───📄 182 - Language Hacks - 2-Questoes.html
+│   ├───📄 182 - Language Hacks - 3-MemhackDeck.html
+├───📁 183 - Writing practice/
+│   ├───📄 183 - Writing practice - 1.mp4
+│   ├───📄 183 - Writing practice - 2-Questoes.html
+│   ├───📄 183 - Writing practice - 3-MemhackDeck.html
+├───📁 184 - Pronunciation Hacks/
+│   ├───📄 184 - Pronunciation Hacks - 1.mp4
+│   ├───📄 184 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 184 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 185 - Comprehension Practice/
+│   ├───📄 185 - Comprehension Practice - 1.mp4
+│   ├───📄 185 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 185 - Comprehension Practice - 3-Questoes.html
+├───📁 186 - Grammar Hacks (part I)/
+│   ├───📄 186 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 186 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 186 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 187 - Grammar Hacks (part II)/
+│   ├───📄 187 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 187 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 187 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 188 - Immersion Time/
+│   ├───📄 188 - Immersion Time - 1.mp4
+│   ├───📄 188 - Immersion Time - 2-Questoes.html
+│   ├───📄 188 - Immersion Time - 3-MemhackDeck.html
+├───📁 189 - Language Hacks/
+│   ├───📄 189 - Language Hacks - 1.mp4
+│   ├───📄 189 - Language Hacks - 2-Questoes.html
+│   ├───📄 189 - Language Hacks - 3-MemhackDeck.html
+├───📁 19 - Immersion Time/
+│   ├───📄 19 - Immersion Time - 1.mp4
+│   ├───📄 19 - Immersion Time - 2-Questoes.html
+│   ├───📄 19 - Immersion Time - 3-MemhackDeck.html
+├───📁 190 - Writing practice/
+│   ├───📄 190 - Writing practice - 1.mp4
+│   ├───📄 190 - Writing practice - 2-Questoes.html
+│   ├───📄 190 - Writing practice - 3-MemhackDeck.html
+├───📁 191 - Pronunciation Hacks/
+│   ├───📄 191 - Pronunciation Hacks - 1.mp4
+│   ├───📄 191 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 191 - Pronunciation Hacks - 3-Questoes.html
+├───📁 192 - Comprehension Practice/
+│   ├───📄 192 - Comprehension Practice - 1.mp4
+│   ├───📄 192 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 192 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 193 - Grammar Hacks/
+│   ├───📄 193 - Grammar Hacks - 1.mp4
+│   ├───📄 193 - Grammar Hacks - 2-Questoes.html
+│   ├───📄 193 - Grammar Hacks - 3-MemhackDeck.html
+├───📁 194 - Immersion Time/
+│   ├───📄 194 - Immersion Time - 1.mp4
+│   ├───📄 194 - Immersion Time - 2-MemhackDeck.html
+│   ├───📄 194 - Immersion Time - 3-Questoes.html
+├───📁 195 - Language Hacks/
+│   ├───📄 195 - Language Hacks - 1.mp4
+│   ├───📄 195 - Language Hacks - 2-MemhackDeck.html
+│   ├───📄 195 - Language Hacks - 3-Questoes.html
+├───📁 196 - Writing practice/
+│   ├───📄 196 - Writing practice - 1.mp4
+│   ├───📄 196 - Writing practice - 2-Questoes.html
+│   ├───📄 196 - Writing practice - 3-MemhackDeck.html
+├───📁 197 - Pronunciation Hacks/
+│   ├───📄 197 - Pronunciation Hacks - 1.mp4
+│   ├───📄 197 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 197 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 198 - Comprehension Practice/
+│   ├───📄 198 - Comprehension Practice - 1.mp4
+│   ├───📄 198 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 198 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 199 - Grammar Hacks/
+│   ├───📄 199 - Grammar Hacks - 1.mp4
+│   ├───📄 199 - Grammar Hacks - 2-Questoes.html
+│   ├───📄 199 - Grammar Hacks - 3-MemhackDeck.html
+├───📁 20 - Pronunciation Hacks/
+│   ├───📄 20 - Pronunciation Hacks - 1.mp4
+│   ├───📄 20 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 20 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 200 - Immersion Time/
+│   ├───📄 200 - Immersion Time - 1.mp4
+│   ├───📄 200 - Immersion Time - 2-Questoes.html
+│   ├───📄 200 - Immersion Time - 3-MemhackDeck.html
+├───📁 201 - Language Hacks/
+│   ├───📄 201 - Language Hacks - 1.mp4
+│   ├───📄 201 - Language Hacks - 2-Questoes.html
+│   ├───📄 201 - Language Hacks - 3-MemhackDeck.html
+├───📁 202 - Writing practice/
+│   ├───📄 202 - Writing practice - 1.mp4
+│   ├───📄 202 - Writing practice - 2-Questoes.html
+│   ├───📄 202 - Writing practice - 3-MemhackDeck.html
+├───📁 203 - Pronunciation Hacks/
+│   ├───📄 203 - Pronunciation Hacks - 1.mp4
+│   ├───📄 203 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 203 - Pronunciation Hacks - 3-MemhackDeck.html
+│   ├───📄 203 - Pronunciation Hacks - 4-Questoes.html
+├───📁 204 - Comprehension Practice/
+│   ├───📄 204 - Comprehension Practice - 1.mp4
+│   ├───📄 204 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 204 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 205 - Pronunciation Hacks/
+│   ├───📄 205 - Pronunciation Hacks - 1.mp4
+│   ├───📄 205 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 205 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 206 - Comprehension Practice/
+│   ├───📄 206 - Comprehension Practice - 1.mp4
+│   ├───📄 206 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 206 - Comprehension Practice - 3-Questoes.html
+├───📁 207 - Stamp your passport/
+│   ├───📄 207 - Stamp your passport - 1.mp4
+│   ├───📄 207 - Stamp your passport - 2-Questoes.html
+│   ├───📄 207 - Stamp your passport - 3-MemhackDeck.html
+├───📁 208 - Comprehension Practice/
+│   ├───📄 208 - Comprehension Practice - 1.mp4
+│   ├───📄 208 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 208 - Comprehension Practice - 3-Questoes.html
+├───📁 209 - Pronunciation Hacks/
+│   ├───📄 209 - Pronunciation Hacks - 1.mp4
+│   ├───📄 209 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 209 - Pronunciation Hacks - 3-Questoes.html
+├───📁 21 - Vocab Rocket/
+│   ├───📄 21 - Vocab Rocket - 1.mp4
+│   ├───📄 21 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 21 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 210 - Comprehension Practice/
+│   ├───📄 210 - Comprehension Practice - 1.mp4
+│   ├───📄 210 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 210 - Comprehension Practice - 3-Questoes.html
+├───📁 211 - Stamp your passport/
+│   ├───📄 211 - Stamp your passport - 1.mp4
+│   ├───📄 211 - Stamp your passport - 2-Questoes.html
+│   ├───📄 211 - Stamp your passport - 3-MemhackDeck.html
+├───📁 212 - Comprehension Practice/
+│   ├───📄 212 - Comprehension Practice - 1.mp4
+│   ├───📄 212 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 212 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 213 - Pronunciation Hacks/
+│   ├───📄 213 - Pronunciation Hacks - 1.mp4
+│   ├───📄 213 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 213 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 214 - Comprehension Practice/
+│   ├───📄 214 - Comprehension Practice - 1.mp4
+│   ├───📄 214 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 214 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 215 - Stamp your passport/
+│   ├───📄 215 - Stamp your passport - 1.mp4
+│   ├───📄 215 - Stamp your passport - 2-Questoes.html
+│   ├───📄 215 - Stamp your passport - 3-MemhackDeck.html
+├───📁 216 - Comprehension Practice/
+│   ├───📄 216 - Comprehension Practice - 1.mp4
+│   ├───📄 216 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 216 - Comprehension Practice - 3-Questoes.html
+├───📁 217 - Pronunciation Hacks/
+│   ├───📄 217 - Pronunciation Hacks - 1.mp4
+│   ├───📄 217 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 217 - Pronunciation Hacks - 3-Questoes.html
+├───📁 218 - Comprehension Practice/
+│   ├───📄 218 - Comprehension Practice - 1.mp4
+│   ├───📄 218 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 218 - Comprehension Practice - 3-Questoes.html
+├───📁 219 - Stamp your passport/
+│   ├───📄 219 - Stamp your passport - 1.mp4
+│   ├───📄 219 - Stamp your passport - 2-Questoes.html
+│   ├───📄 219 - Stamp your passport - 3-MemhackDeck.html
+│   ├───📄 219 - Stamp your passport - 4-Questoes.html
+├───📁 22 - Comprehension Practice/
+│   ├───📄 22 - Comprehension Practice - 1.mp4
+│   ├───📄 22 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 22 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 22 - Comprehension Practice - 4.mp4
+│   ├───📄 22 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 220 - Comprehension Practice/
+│   ├───📄 220 - Comprehension Practice - 1.mp4
+│   ├───📄 220 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 220 - Comprehension Practice - 3-Questoes.html
+├───📁 221 - Pronunciation Hacks/
+│   ├───📄 221 - Pronunciation Hacks - 1.mp4
+│   ├───📄 221 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 221 - Pronunciation Hacks - 3-Questoes.html
+├───📁 222 - Comprehension Practice/
+│   ├───📄 222 - Comprehension Practice - 1.mp4
+│   ├───📄 222 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 222 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 223 - Stamp your passport/
+│   ├───📄 223 - Stamp your passport - 1.mp4
+│   ├───📄 223 - Stamp your passport - 2-Questoes.html
+│   ├───📄 223 - Stamp your passport - 3-MemhackDeck.html
+├───📁 224 - Comprehension Practice/
+│   ├───📄 224 - Comprehension Practice - 1.mp4
+│   ├───📄 224 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 224 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 225 - Pronunciation Hacks/
+│   ├───📄 225 - Pronunciation Hacks - 1.mp4
+│   ├───📄 225 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 225 - Pronunciation Hacks - 3-Questoes.html
+├───📁 226 - Comprehension Practice/
+│   ├───📄 226 - Comprehension Practice - 1.mp4
+│   ├───📄 226 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 226 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 227 - Stamp your passport/
+│   ├───📄 227 - Stamp your passport - 1.mp4
+│   ├───📄 227 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 227 - Stamp your passport - 3-Questoes.html
+├───📁 228 - Comprehension Practice/
+│   ├───📄 228 - Comprehension Practice - 1.mp4
+│   ├───📄 228 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 228 - Comprehension Practice - 3-Questoes.html
+├───📁 229 - Pronunciation Hacks/
+│   ├───📄 229 - Pronunciation Hacks - 1.mp4
+│   ├───📄 229 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 229 - Pronunciation Hacks - 3-Questoes.html
+├───📁 23 - Grammar Hacks (Part I)/
+│   ├───📄 23 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 23 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 23 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 230 - Comprehension Practice/
+│   ├───📄 230 - Comprehension Practice - 1.mp4
+│   ├───📄 230 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 230 - Comprehension Practice - 3-Questoes.html
+├───📁 231 - Stamp your passport/
+│   ├───📄 231 - Stamp your passport - 1.mp4
+│   ├───📄 231 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 231 - Stamp your passport - 3-Questoes.html
+├───📁 232 - Comprehension Practice/
+│   ├───📄 232 - Comprehension Practice - 1.mp4
+│   ├───📄 232 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 232 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 233 - Pronunciation Hacks/
+│   ├───📄 233 - Pronunciation Hacks - 1.mp4
+│   ├───📄 233 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 233 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 234 - Comprehension Practice/
+│   ├───📄 234 - Comprehension Practice - 1.mp4
+│   ├───📄 234 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 234 - Comprehension Practice - 3-Questoes.html
+├───📁 235 - Stamp your passport/
+│   ├───📄 235 - Stamp your passport - 1.mp4
+│   ├───📄 235 - Stamp your passport - 2-Questoes.html
+│   ├───📄 235 - Stamp your passport - 3-MemhackDeck.html
+│   ├───📄 235 - Stamp your passport - 4-Questoes.html
+├───📁 236 - Comprehension Practice/
+│   ├───📄 236 - Comprehension Practice - 1.mp4
+│   ├───📄 236 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 236 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 237 - Pronunciation Hacks/
+│   ├───📄 237 - Pronunciation Hacks - 1.mp4
+│   ├───📄 237 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 237 - Pronunciation Hacks - 3-Questoes.html
+├───📁 238 - Comprehension Practice/
+│   ├───📄 238 - Comprehension Practice - 1.mp4
+│   ├───📄 238 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 238 - Comprehension Practice - 3-Questoes.html
+├───📁 239 - Stamp your passport/
+│   ├───📄 239 - Stamp your passport - 1.mp4
+│   ├───📄 239 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 239 - Stamp your passport - 3-Questoes.html
+├───📁 24 - Grammar Hacks (Part II)/
+│   ├───📄 24 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 24 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 24 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 240 - Comprehension Practice/
+│   ├───📄 240 - Comprehension Practice - 1.mp4
+│   ├───📄 240 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 240 - Comprehension Practice - 3-Questoes.html
+├───📁 241 - Pronunciation Hacks/
+│   ├───📄 241 - Pronunciation Hacks - 1.mp4
+│   ├───📄 241 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 241 - Pronunciation Hacks - 3-Questoes.html
+├───📁 242 - Comprehension Practice/
+│   ├───📄 242 - Comprehension Practice - 1.mp4
+│   ├───📄 242 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 242 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 243 - Stamp your passport/
+│   ├───📄 243 - Stamp your passport - 1.mp4
+│   ├───📄 243 - Stamp your passport - 2-Questoes.html
+│   ├───📄 243 - Stamp your passport - 3-MemhackDeck.html
+├───📁 244 - Comprehension Practice/
+│   ├───📄 244 - Comprehension Practice - 1.mp4
+│   ├───📄 244 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 244 - Comprehension Practice - 3-Questoes.html
+├───📁 245 - Pronunciation Hacks/
+│   ├───📄 245 - Pronunciation Hacks - 1.mp4
+│   ├───📄 245 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 245 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 246 - Comprehension Practice/
+│   ├───📄 246 - Comprehension Practice - 1.mp4
+│   ├───📄 246 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 246 - Comprehension Practice - 3-Questoes.html
+├───📁 247 - Stamp your passport/
+│   ├───📄 247 - Stamp your passport - 1.mp4
+│   ├───📄 247 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 247 - Stamp your passport - 3-Questoes.html
+├───📁 248 - Comprehension Practice/
+│   ├───📄 248 - Comprehension Practice - 1.mp4
+│   ├───📄 248 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 248 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 249 - Pronunciation Hacks/
+│   ├───📄 249 - Pronunciation Hacks - 1.mp4
+│   ├───📄 249 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 249 - Pronunciation Hacks - 3-Questoes.html
+├───📁 25 - Immersion Time/
+│   ├───📄 25 - Immersion Time - 1.mp4
+│   ├───📄 25 - Immersion Time - 2-Questoes.html
+│   ├───📄 25 - Immersion Time - 3-MemhackDeck.html
+├───📁 250 - Comprehension Practice/
+│   ├───📄 250 - Comprehension Practice - 1.mp4
+│   ├───📄 250 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 250 - Comprehension Practice - 3-Questoes.html
+├───📁 251 - Stamp your passport/
+│   ├───📄 251 - Stamp your passport - 1.mp4
+│   ├───📄 251 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 251 - Stamp your passport - 3-Questoes.html
+│   ├───📄 251 - Stamp your passport - 4-Questoes.html
+├───📁 252 - Comprehension Practice/
+│   ├───📄 252 - Comprehension Practice - 1.mp4
+│   ├───📄 252 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 252 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 253 - Pronunciation Hacks/
+│   ├───📄 253 - Pronunciation Hacks - 1.mp4
+│   ├───📄 253 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 253 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 254 - Comprehension Practice/
+│   ├───📄 254 - Comprehension Practice - 1.mp4
+│   ├───📄 254 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 254 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 255 - Stamp your passport/
+│   ├───📄 255 - Stamp your passport - 1.mp4
+│   ├───📄 255 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 255 - Stamp your passport - 3-Questoes.html
+├───📁 256 - Comprehension Practice/
+│   ├───📄 256 - Comprehension Practice - 1.mp4
+│   ├───📄 256 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 256 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 257 - Pronunciation Hacks/
+│   ├───📄 257 - Pronunciation Hacks - 1.mp4
+│   ├───📄 257 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 257 - Pronunciation Hacks - 3-Questoes.html
+├───📁 258 - Comprehension Practice/
+│   ├───📄 258 - Comprehension Practice - 1.mp4
+│   ├───📄 258 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 258 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 259 - Stamp your passport/
+│   ├───📄 259 - Stamp your passport - 1.mp4
+│   ├───📄 259 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 259 - Stamp your passport - 3-Questoes.html
+├───📁 26 - Pronunciation Hacks/
+│   ├───📄 26 - Pronunciation Hacks - 1.mp4
+│   ├───📄 26 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 26 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 260 - Comprehension Practice/
+│   ├───📄 260 - Comprehension Practice - 1.mp4
+│   ├───📄 260 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 260 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 261 - Pronunciation Hacks/
+│   ├───📄 261 - Pronunciation Hacks - 1.mp4
+│   ├───📄 261 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 261 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 262 - Comprehension Practice/
+│   ├───📄 262 - Comprehension Practice - 1.mp4
+│   ├───📄 262 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 262 - Comprehension Practice - 3-Questoes.html
+├───📁 263 - Stamp your passport/
+│   ├───📄 263 - Stamp your passport - 1.mp4
+│   ├───📄 263 - Stamp your passport - 2-MemhackDeck.html
+│   ├───📄 263 - Stamp your passport - 3-Questoes.html
+├───📁 264 - Comprehension Practice/
+│   ├───📄 264 - Comprehension Practice - 1.mp4
+│   ├───📄 264 - Comprehension Practice - 2-MemhackDeck.html
+│   ├───📄 264 - Comprehension Practice - 3-Questoes.html
+├───📁 265 - Pronunciation Hacks/
+│   ├───📄 265 - Pronunciation Hacks - 1.mp4
+│   ├───📄 265 - Pronunciation Hacks - 2-MemhackDeck.html
+│   ├───📄 265 - Pronunciation Hacks - 3-Questoes.html
+├───📁 266 - Comprehension Practice/
+│   ├───📄 266 - Comprehension Practice - 1.mp4
+│   ├───📄 266 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 266 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 267 - Stamp your passport/
+│   ├───📄 267 - Stamp your passport - 1.mp4
+│   ├───📄 267 - Stamp your passport - 2-Questoes.html
+│   ├───📄 267 - Stamp your passport - 3-MemhackDeck.html
+│   ├───📄 267 - Stamp your passport - 4-Questoes.html
+├───📁 27 - Vocab Rocket/
+│   ├───📄 27 - Vocab Rocket - 1.mp4
+│   ├───📄 27 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 27 - Vocab Rocket - 3-MemhackDeck.html
+│   ├───📄 27 - Vocab Rocket - 4-Questoes.html
+├───📁 28 - Comprehension Practice/
+│   ├───📄 28 - Comprehension Practice - 1.mp4
+│   ├───📄 28 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 28 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 28 - Comprehension Practice - 4.mp4
+│   ├───📄 28 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 29 - Grammar Hacks (Part I)/
+│   ├───📄 29 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 29 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 29 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 30 - Grammar Hacks (Part II)/
+│   ├───📄 30 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 30 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 30 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 31 - Immersion Time/
+│   ├───📄 31 - Immersion Time - 1.mp4
+│   ├───📄 31 - Immersion Time - 2-Questoes.html
+│   ├───📄 31 - Immersion Time - 3-MemhackDeck.html
+├───📁 32 - Pronunciation Hacks/
+│   ├───📄 32 - Pronunciation Hacks - 1.mp4
+│   ├───📄 32 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 32 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 33 - Vocab Rocket/
+│   ├───📄 33 - Vocab Rocket - 1.mp4
+│   ├───📄 33 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 33 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 34 - Comprehension Practice/
+│   ├───📄 34 - Comprehension Practice - 1.mp4
+│   ├───📄 34 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 34 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 34 - Comprehension Practice - 4.mp4
+│   ├───📄 34 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 35 - Grammar Hacks (Part I)/
+│   ├───📄 35 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 35 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 35 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 36 - Grammar Hacks (Part II)/
+│   ├───📄 36 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 36 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 36 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 37 - Immersion Time/
+│   ├───📄 37 - Immersion Time - 1.mp4
+│   ├───📄 37 - Immersion Time - 2-Questoes.html
+│   ├───📄 37 - Immersion Time - 3-MemhackDeck.html
+├───📁 38 - Pronunciation Hacks/
+│   ├───📄 38 - Pronunciation Hacks - 1.mp4
+│   ├───📄 38 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 38 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 39 - Vocab Rocket/
+│   ├───📄 39 - Vocab Rocket - 1.mp4
+│   ├───📄 39 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 39 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 40 - Comprehension Practice/
+│   ├───📄 40 - Comprehension Practice - 1.mp4
+│   ├───📄 40 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 40 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 40 - Comprehension Practice - 4.mp4
+│   ├───📄 40 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 41 - Grammar Hacks (Part I)/
+│   ├───📄 41 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 41 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 41 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 42 - Grammar Hacks (Part II)/
+│   ├───📄 42 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 42 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 42 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 43 - Immersion Time/
+│   ├───📄 43 - Immersion Time - 1.mp4
+│   ├───📄 43 - Immersion Time - 2-Questoes.html
+│   ├───📄 43 - Immersion Time - 3-MemhackDeck.html
+├───📁 44 - Pronunciation Hacks/
+│   ├───📄 44 - Pronunciation Hacks - 1.mp4
+│   ├───📄 44 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 44 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 45 - Vocab Rocket/
+│   ├───📄 45 - Vocab Rocket - 1.mp4
+│   ├───📄 45 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 45 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 46 - Comprehension Practice/
+│   ├───📄 46 - Comprehension Practice - 1.mp4
+│   ├───📄 46 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 46 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 46 - Comprehension Practice - 4.mp4
+│   ├───📄 46 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 47 - Grammar Hacks (Part I)/
+│   ├───📄 47 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 47 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 47 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 48 - Grammar Hacks (Part II)/
+│   ├───📄 48 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 48 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 48 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 49 - Immersion Time/
+│   ├───📄 49 - Immersion Time - 1.mp4
+│   ├───📄 49 - Immersion Time - 2-Questoes.html
+│   ├───📄 49 - Immersion Time - 3-MemhackDeck.html
+├───📁 50 - Pronunciation Hacks/
+│   ├───📄 50 - Pronunciation Hacks - 1.mp4
+│   ├───📄 50 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 50 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 51 - Vocab Rocket/
+│   ├───📄 51 - Vocab Rocket - 1.mp4
+│   ├───📄 51 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 51 - Vocab Rocket - 3-MemhackDeck.html
+│   ├───📄 51 - Vocab Rocket - 4-Questoes.html
+├───📁 52 - Comprehension Practice/
+│   ├───📄 52 - Comprehension Practice - 1.mp4
+│   ├───📄 52 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 52 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 52 - Comprehension Practice - 4.mp4
+│   ├───📄 52 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 53 - Grammar Hacks (Part I)/
+│   ├───📄 53 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 53 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 53 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 54 - Grammar Hacks (Part II)/
+│   ├───📄 54 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 54 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 54 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 55 - Immersion Time/
+│   ├───📄 55 - Immersion Time - 1.mp4
+│   ├───📄 55 - Immersion Time - 2-Questoes.html
+│   ├───📄 55 - Immersion Time - 3-MemhackDeck.html
+├───📁 56 - Pronunciation Hacks/
+│   ├───📄 56 - Pronunciation Hacks - 1.mp4
+│   ├───📄 56 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 56 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 57 - Vocab Rocket/
+│   ├───📄 57 - Vocab Rocket - 1.mp4
+│   ├───📄 57 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 57 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 58 - Comprehension Practice/
+│   ├───📄 58 - Comprehension Practice - 1.mp4
+│   ├───📄 58 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 58 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 58 - Comprehension Practice - 4.mp4
+│   ├───📄 58 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 59 - Grammar Hacks (Part I)/
+│   ├───📄 59 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 59 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 59 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 60 - Grammar Hacks (Part II)/
+│   ├───📄 60 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 60 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 60 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 61 - Immersion Time/
+│   ├───📄 61 - Immersion Time - 1.mp4
+│   ├───📄 61 - Immersion Time - 2-Questoes.html
+│   ├───📄 61 - Immersion Time - 3-MemhackDeck.html
+├───📁 62 - Pronunciation Hacks/
+│   ├───📄 62 - Pronunciation Hacks - 1.mp4
+│   ├───📄 62 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 62 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 63 - Vocab Rocket/
+│   ├───📄 63 - Vocab Rocket - 1.mp4
+│   ├───📄 63 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 63 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 64 - Comprehension Practice/
+│   ├───📄 64 - Comprehension Practice - 1.mp4
+│   ├───📄 64 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 64 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 64 - Comprehension Practice - 4.mp4
+│   ├───📄 64 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 65 - Grammar Hacks (Part I)/
+│   ├───📄 65 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 65 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 65 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 66 - Grammar Hacks (Part II)/
+│   ├───📄 66 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 66 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 66 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 67 - Immersion Time/
+│   ├───📄 67 - Immersion Time - 1.mp4
+│   ├───📄 67 - Immersion Time - 2-Questoes.html
+│   ├───📄 67 - Immersion Time - 3-MemhackDeck.html
+├───📁 68 - Pronunciation Hacks/
+│   ├───📄 68 - Pronunciation Hacks - 1.mp4
+│   ├───📄 68 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 68 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 69 - Vocab Rocket/
+│   ├───📄 69 - Vocab Rocket - 1.mp4
+│   ├───📄 69 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 69 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 70 - Comprehension Practice/
+│   ├───📄 70 - Comprehension Practice - 1.mp4
+│   ├───📄 70 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 70 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 70 - Comprehension Practice - 4.mp4
+│   ├───📄 70 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 71 - Grammar Hacks (Part I)/
+│   ├───📄 71 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 71 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 71 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 72 - Grammar Hacks (Part II)/
+│   ├───📄 72 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 72 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 72 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 73 - Immersion Time/
+│   ├───📄 73 - Immersion Time - 1.mp4
+│   ├───📄 73 - Immersion Time - 2-Questoes.html
+│   ├───📄 73 - Immersion Time - 3-MemhackDeck.html
+├───📁 74 - Pronunciation Hacks/
+│   ├───📄 74 - Pronunciation Hacks - 1.mp4
+│   ├───📄 74 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 74 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 75 - Vocab Rocket/
+│   ├───📄 75 - Vocab Rocket - 1.mp4
+│   ├───📄 75 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 75 - Vocab Rocket - 3-MemhackDeck.html
+│   ├───📄 75 - Vocab Rocket - 4-Questoes.html
+├───📁 76 - Comprehension Practice/
+│   ├───📄 76 - Comprehension Practice - 1.mp4
+│   ├───📄 76 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 76 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 76 - Comprehension Practice - 4.mp4
+│   ├───📄 76 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 77 - Grammar Hacks (Part I)/
+│   ├───📄 77 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 77 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 77 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 78 - Grammar Hacks (Part II)/
+│   ├───📄 78 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 78 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 78 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 79 - Immersion Time/
+│   ├───📄 79 - Immersion Time - 1.mp4
+│   ├───📄 79 - Immersion Time - 2-Questoes.html
+│   ├───📄 79 - Immersion Time - 3-MemhackDeck.html
+├───📁 80 - Pronunciation Hacks/
+│   ├───📄 80 - Pronunciation Hacks - 1.mp4
+│   ├───📄 80 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 80 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 81 - Vocab Rocket/
+│   ├───📄 81 - Vocab Rocket - 1.mp4
+│   ├───📄 81 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 81 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 82 - Comprehension Practice/
+│   ├───📄 82 - Comprehension Practice - 1.mp4
+│   ├───📄 82 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 82 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 82 - Comprehension Practice - 4.mp4
+│   ├───📄 82 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 83 - Grammar Hacks (Part I)/
+│   ├───📄 83 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 83 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 83 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 84 - Grammar Hacks (Part II)/
+│   ├───📄 84 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 84 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 84 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 85 - Immersion Time/
+│   ├───📄 85 - Immersion Time - 1.mp4
+│   ├───📄 85 - Immersion Time - 2-Questoes.html
+│   ├───📄 85 - Immersion Time - 3-MemhackDeck.html
+├───📁 86 - Pronunciation Hacks/
+│   ├───📄 86 - Pronunciation Hacks - 1.mp4
+│   ├───📄 86 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 86 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 87 - Vocab Rocket/
+│   ├───📄 87 - Vocab Rocket - 1.mp4
+│   ├───📄 87 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 87 - Vocab Rocket - 3-MemhackDeck.html
+├───📁 88 - Comprehension Practice/
+│   ├───📄 88 - Comprehension Practice - 1.mp4
+│   ├───📄 88 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 88 - Comprehension Practice - 3-MemhackDeck.html
+│   ├───📄 88 - Comprehension Practice - 4.mp4
+│   ├───📄 88 - Comprehension Practice - 5-MemhackDeck.html
+├───📁 89 - Grammar Hacks (Part I)/
+│   ├───📄 89 - Grammar Hacks (Part I) - 1.mp4
+│   ├───📄 89 - Grammar Hacks (Part I) - 2-Questoes.html
+│   ├───📄 89 - Grammar Hacks (Part I) - 3-MemhackDeck.html
+├───📁 90 - Grammar Hacks (Part II)/
+│   ├───📄 90 - Grammar Hacks (Part II) - 1.mp4
+│   ├───📄 90 - Grammar Hacks (Part II) - 2-Questoes.html
+│   ├───📄 90 - Grammar Hacks (Part II) - 3-MemhackDeck.html
+├───📁 91 - Immersion Time/
+│   ├───📄 91 - Immersion Time - 1.mp4
+│   ├───📄 91 - Immersion Time - 2-Questoes.html
+│   ├───📄 91 - Immersion Time - 3-MemhackDeck.html
+├───📁 92 - Pronunciation Hacks/
+│   ├───📄 92 - Pronunciation Hacks - 1.mp4
+│   ├───📄 92 - Pronunciation Hacks - 2-Questoes.html
+│   ├───📄 92 - Pronunciation Hacks - 3-MemhackDeck.html
+├───📁 93 - Vocab Rocket/
+│   ├───📄 93 - Vocab Rocket - 1.mp4
+│   ├───📄 93 - Vocab Rocket - 2-Questoes.html
+│   ├───📄 93 - Vocab Rocket - 3-MemhackDeck.html
+│   ├───📄 93 - Vocab Rocket - 4-Questoes.html
+├───📁 94 - Comprehension Practice/
+│   ├───📄 94 - Comprehension Practice - 1.mp4
+│   ├───📄 94 - Comprehension Practice - 2-Questoes.html
+│   ├───📄 94 - Comprehension Practice - 3-MemhackDeck.html
+├───📁 95 - Grammar Hacks (part I)/
+│   ├───📄 95 - Grammar Hacks (part I) - 1.mp4
+│   ├───📄 95 - Grammar Hacks (part I) - 2-Questoes.html
+│   ├───📄 95 - Grammar Hacks (part I) - 3-MemhackDeck.html
+├───📁 96 - Grammar Hacks (part II)/
+│   ├───📄 96 - Grammar Hacks (part II) - 1.mp4
+│   ├───📄 96 - Grammar Hacks (part II) - 2-Questoes.html
+│   ├───📄 96 - Grammar Hacks (part II) - 3-MemhackDeck.html
+├───📁 97 - Immersion Time/
+│   ├───📄 97 - Immersion Time - 1.mp4
+│   ├───📄 97 - Immersion Time - 2-Questoes.html
+│   ├───📄 97 - Immersion Time - 3-MemhackDeck.html
+├───📁 98 - Language Hacks/
+│   ├───📄 98 - Language Hacks - 1.mp4
+│   ├───📄 98 - Language Hacks - 2-Questoes.html
+│   ├───📄 98 - Language Hacks - 3-MemhackDeck.html
+├───📁 99 - Writing Practice/
+│   ├───📄 99 - Writing Practice - 1.mp4
+│   ├───📄 99 - Writing Practice - 2-Questoes.html
+│   ├───📄 99 - Writing Practice - 3-MemhackDeck.html
