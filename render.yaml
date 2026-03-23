@@ -1,0 +1,16 @@
+services:
+  - type: static_site
+    name: engleap
+    rootDir: srs-app
+    buildCommand: npm install --include=optional && npm run build
+    staticPublishPath: dist
+    pullRequestPreviewsEnabled: false
+    envVars:
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

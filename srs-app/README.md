@@ -11,3 +11,5 @@ npm run build
 ```
 
 As variaveis locais ficam em `srs-app/.env.local`. Veja `srs-app/.env.example`.
+
+No Render, a configuracao recomendada para esta app e `Static Site` usando o blueprint em `../render.yaml`.

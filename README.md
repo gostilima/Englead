@@ -10,7 +10,8 @@ Aplicacao web de estudos com React + Vite, materiais estaticos em `srs-app/publi
 |- supabase/         # edge functions e configuracoes Supabase
 |- package.json      # comandos do workspace
 |- package-lock.json # lockfile usado pela Vercel
-`- vercel.json       # configuracao de build/deploy
+|- vercel.json       # configuracao de build/deploy na Vercel
+`- render.yaml       # blueprint pronta para deploy no Render
 ```
 
 ## Rodando localmente
@@ -54,6 +55,33 @@ Na Vercel, configure estas variaveis de ambiente:
 
 - `VITE_SUPABASE_URL`
 - `VITE_SUPABASE_ANON_KEY`
+
+## Render
+
+O projeto ja esta preparado para Render com a blueprint em `render.yaml`.
+
+Configuracao incluida:
+
+- tipo: `Static Site`
+- root directory: `srs-app`
+- build command: `npm install --include=optional && npm run build`
+- publish directory: `dist`
+
+Variaveis de ambiente esperadas no primeiro deploy:
+
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
+
+Passos no painel:
+
+1. No Render, escolha `New +` -> `Blueprint`.
+2. Conecte o repositório [https://github.com/gostilima/Englead](https://github.com/gostilima/Englead).
+3. Confirme a criacao do servico `engleap`.
+4. Preencha as duas variaveis do Supabase quando o Render pedir.
+
+Observacao:
+
+- Para este projeto, `Static Site` e o modo recomendado no Render. O suporte a `Web Service` ficou no repositorio apenas como fallback.
 
 ## GitHub
 
