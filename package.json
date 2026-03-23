@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "npm run dev --workspace=srs-app",
     "build": "npm run build --workspace=srs-app",
-    "lint": "npm run lint --workspace=srs-app"
+    "lint": "npm run lint --workspace=srs-app",
+    "start": "npm run start --workspace=srs-app"
   }
 }
