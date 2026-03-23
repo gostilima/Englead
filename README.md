@@ -64,8 +64,9 @@ Configuracao incluida:
 
 - tipo: `Static Site`
 - root directory: `srs-app`
-- build command: `npm install --include=optional && npm run build`
+- build command: `npm ci --include=optional && npm run build`
 - publish directory: `dist`
+- `SKIP_INSTALL_DEPS=true` para evitar instalacao duplicada no pipeline do Render
 
 Variaveis de ambiente esperadas no primeiro deploy:
 
@@ -81,7 +82,8 @@ Passos no painel:
 
 Observacao:
 
-- Para este projeto, `Static Site` e o modo recomendado no Render. O suporte a `Web Service` ficou no repositorio apenas como fallback.
+- Para este projeto, `Static Site` e o modo recomendado no Render.
+- Nao foi adicionada regra global de rewrite no Render porque a aplicacao nao usa React Router e precisa servir arquivos reais em `/materiais/...`.
 
 ## GitHub
 
