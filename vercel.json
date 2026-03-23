@@ -1,6 +1,5 @@
 {
+  "installCommand": "cd srs-app && npm install",
   "buildCommand": "cd srs-app && npm run build",
-  "outputDirectory": "srs-app/dist",
-  "framework": "vite",
-  "installCommand": "cd srs-app && npm install"
+  "outputDirectory": "srs-app/dist"
 }
