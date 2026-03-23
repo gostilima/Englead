@@ -6,8 +6,8 @@
     "srs-app"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=srs-app",
-    "build": "npm run build --workspace=srs-app",
-    "lint": "npm run lint --workspace=srs-app"
+    "dev": "cd srs-app && npm run dev",
+    "build": "cd srs-app && npm run build",
+    "lint": "cd srs-app && npm run lint"
   }
 }
