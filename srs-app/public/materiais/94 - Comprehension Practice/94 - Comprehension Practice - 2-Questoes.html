@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "74a94129-90a2-4375-b7d9-159828d6925b", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>No Brasil, usamos a interjei\u00e7\u00e3o \u201cai, meu Deus\u201d principalmente como insatisfa\u00e7\u00e3o ou preocupa\u00e7\u00e3o. Em ingl\u00eas, \u201coh my goodness\u201d pode ser usado:&nbsp;&nbsp;</p>", "media": null, "options": [{"option_id": "c9409979-7ffa-4787-b98a-b6325c625e35", "content": "to only express shock and fear.", "image_url": ""}, {"option_id": "7bbf60c5-c2b6-4467-b6cf-7b8a6a2c2f3e", "content": "to express surprise, shock, amazement, and excitement. ", "image_url": ""}, {"option_id": "d9f69c6d-384b-4276-88a0-1b18b15c400f", "content": "to only express amazement and excitement.", "image_url": ""}, {"option_id": "67e220bd-9898-43fa-8c14-84262839a4a8", "content": "to express satisfaction. ", "image_url": ""}], "answer": null}, {"question_id": "7f39ce9b-7697-4420-8812-726a059fe5dd", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e responda \u00e0 pergunta:</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/1709682907341_01_Oh_man_When_is_the_assignm.mp3"}, "options": [{"option_id": "6ea4a71f-a9fd-4abe-a6d4-ec4b6867626d", "content": "I don\u2019t know when the baby is due.", "image_url": ""}, {"option_id": "932ef4f2-f09f-47ad-83e2-9e1f27176fb6", "content": "The professor said it was for Friday. ", "image_url": ""}, {"option_id": "539d57b3-51d8-41e8-b890-b778c1146b0e", "content": "The sign is on the left. ", "image_url": ""}, {"option_id": "5ae11752-a5c7-4912-9fd2-9f8b3c29c229", "content": "The man is not assigned yet. ", "image_url": ""}], "answer": null}, {"question_id": "e9e6ec04-0ee0-490b-b35e-911060c19921", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>O que expressamos quando algu\u00e9m acerta um alvo, ou alcan\u00e7a um objetivo de forma precisa?</p>", "media": null, "options": [{"option_id": "dde3cbbb-3bc1-492b-8514-684329310ec6", "content": "Break a leg!", "image_url": ""}, {"option_id": "f725a0cb-2906-4afb-9ec0-a4d3cdc17bb5", "content": "Right in the bull\u2019s eye! ", "image_url": ""}, {"option_id": "b8341adf-0822-48c3-87ac-2e79d2b6de63", "content": "Happy Birthday!", "image_url": ""}, {"option_id": "43a5818a-adc3-4efa-98fc-3234ddc2f07c", "content": "Oh my goodness!", "image_url": ""}], "answer": null}, {"question_id": "32086aa7-eb06-4728-b930-1695d0d3b6af", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<ol><li>\u201cAt 9 pm on Christmas Eve, baby Gavin was already sound asleep\u201d. O que significa \u201csound asleep\u201d nesta frase?To sleep lightly.</li></ol>", "media": null, "options": [{"option_id": "6a9f9a09-bc31-40fd-b68b-2c5ad6d8db60", "content": "To sleep lightly.", "image_url": ""}, {"option_id": "452539ee-b669-42f5-8871-2cdbf0fecee0", "content": "To sleep deeply.", "image_url": ""}, {"option_id": "853e6bf8-bf87-4578-9020-ae8d84938dc8", "content": "To catnap.", "image_url": ""}, {"option_id": "03d0a8c4-95e8-4ae5-9d2f-1c3a8692d84c", "content": "To be falling asleep. ", "image_url": ""}], "answer": null}, {"question_id": "196f8f7b-4ddc-4527-8916-52211e32ac71", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e escolha qual seria outra op\u00e7\u00e3o de pergunta?</p>", "media": {"type": "audio", "url": "https://fluency-plus.s3.amazonaws.com/media/audio/17096829107161276_SMALL_TALK_U01_You-want-to-pet-baby-Brena.mp3"}, "options": [{"option_id": "e42ad263-75f4-4bf2-8dfd-c0f3ef65f7c2", "content": "Do you want to give baby Brena a dog?", "image_url": ""}, {"option_id": "6f7bee46-b45c-4ed3-9e38-8612453d33de", "content": "Do you want to hold baby Brena?", "image_url": ""}, {"option_id": "b631905e-8835-4a19-b3cc-42a7c1c112b5", "content": "Do you want to gently touch baby Brena?", "image_url": ""}, {"option_id": "03bebf86-c249-4864-99c7-e6bcd17ce127", "content": "Do you want to see baby Brena?", "image_url": ""}], "answer": null}, {"question_id": "29241451-52cc-4435-812f-aded95b0bc2a", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>\u201cThe baby was due in early September. But it happened that he couldn\u2019t wait any longer.\u201d. Based on this, one can say that her baby:</p>", "media": null, "options": [{"option_id": "f1110586-faaa-4f89-b79a-9df3b38763d7", "content": "Was born in September", "image_url": ""}, {"option_id": "5ec71094-0bb1-4c0c-8c6a-bdb82b340bf6", "content": "Had to arrive later", "image_url": ""}, {"option_id": "a82cb4f5-3b3e-4cf5-ae5f-28f06a278f00", "content": "Was born after September", "image_url": ""}, {"option_id": "16d3d830-f21b-4956-9f83-5ea1a25aa263", "content": "Was born before September.", "image_url": ""}], "answer": null}, {"question_id": "f01cc31a-a2ed-4a56-894e-4c66b3a8e769", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>While parents, in Brazil, tell a child to do something, in the USA parents:</p>", "media": null, "options": [{"option_id": "fac1be5e-daaf-40e2-85a9-31e6726163ad", "content": "Explain to the child how to do the task", "image_url": ""}, {"option_id": "de84ee74-c55e-4c4c-a32c-12edf1945e7f", "content": "Ask the child to do the task", "image_url": ""}, {"option_id": "6a6a567b-1575-4a52-acb0-164099fe6aa7", "content": "Do the task for the child instead", "image_url": ""}, {"option_id": "c58d7ebb-383e-404a-abc8-ba2bdd1129bf", "content": "Ask the child if they want to do the task", "image_url": ""}], "answer": null}, {"question_id": "5f0cc08e-7ff2-4743-90b9-ec5e6064075a", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>If a child says \u201cMove out the way.\u201d It's okay. But if an adult said it, what would it be?</p>", "media": null, "options": [{"option_id": "bdf1a12b-58cb-45f4-acbf-f750a7ab3b29", "content": "Wrong, because only children say that.", "image_url": ""}, {"option_id": "b8615304-bcaa-4936-83cb-b96e83b7df1e", "content": "Correct, it\u2019s the right way of saying it.", "image_url": ""}, {"option_id": "86b403d2-d59b-473d-aa9b-901d9241a3b3", "content": "Rude, it\u2019s better to say \u201cExcuse me\u201d.", "image_url": ""}, {"option_id": "f88b386c-fc80-41b7-9dd4-775a5e3b14d1", "content": "Not so right, it\u2019s better to say \u201cYou\u2019re on the way\u201d.", "image_url": ""}], "answer": null}, {"question_id": "6e6798f1-b987-4df2-9b97-760d75d703c5", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>A football player hits the goal. Then the commentator says \u201cBull\u2019s eye!\u201d. Why did they say that?</p>", "media": null, "options": [{"option_id": "5bf722e7-a095-496c-a8fe-04962afc876e", "content": "They got it right", "image_url": ""}, {"option_id": "fb9ab455-9244-449a-add6-3060842474ec", "content": "The goal looks like a bull\u2019s eye", "image_url": ""}, {"option_id": "774ee1ae-8996-4200-8bdd-a83cff75536e", "content": "They have to pay attention to their eyes", "image_url": ""}, {"option_id": "6f5a103b-6d8e-4c42-b719-750f680610b0", "content": "What they did was impossible", "image_url": ""}], "answer": null}, {"question_id": "164a232b-181c-405e-bbad-5ae5a9a8a2f0", "assessment_id": "58332407-03f8-47cc-873b-5c9cad6b175b", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Young Gavin sang: \u201cAll of the other reindeer used to laugh and call him names.\u201d What does \u201ccall him names\u201d mean in this context?</p>", "media": null, "options": [{"option_id": "8e7ce893-1d4e-43d6-a27e-34dfe96f3690", "content": "That they had a funny nickname for him", "image_url": ""}, {"option_id": "cb442d13-c171-4ed3-bc87-765182f78f48", "content": "That they called him not so friendly words", "image_url": ""}, {"option_id": "e7aeb0e4-0715-4d92-90b0-97664a8b666e", "content": "That they used to laugh about his name", "image_url": ""}, {"option_id": "98964019-c532-45ee-9425-d23f2d37a5d2", "content": "That they wanted to give him a new name", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

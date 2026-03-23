@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "f68b4aa9-5549-4930-b40b-1a3d4d18ba0b", "assessment_id": "1eb9454f-b893-4973-897b-da5c8ef51eab", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Adam goes, \u201cIn Virginia I noticed it was like \u2018only focus on education, only focus on working hard, don't worry about anything else\u2019 type of thing so there was this lack of exchange and connecting with other parts of the world. So I think that's something that's just important no matter where you live.\u201d</p><p>&nbsp;</p><p>Read the text and choose the sentence that is not implied by Adam:</p>", "media": null, "options": [{"option_id": "205c579c-d3fa-4daf-98a7-ac7e13968a12", "content": "Connecting with different parts of the world exposes individuals to diverse cultures, traditions, and ways of life. ", "image_url": ""}, {"option_id": "82d16513-57b0-4894-b111-46571f6a5b59", "content": "Global connections can enhance personal and cultural growth.", "image_url": ""}, {"option_id": "029faef9-f5d3-4e10-b994-ca7ea136fb5d", "content": "Getting to know different cultures fosters empathy, tolerance, and appreciation for cultural diversity.", "image_url": ""}, {"option_id": "68332aa9-0535-4c2c-8d09-4d1ca62b5b2c", "content": "Engaging with the local community contributes to personal development.", "image_url": ""}], "answer": null}, {"question_id": "319d86a0-ab90-4d87-9509-4bde69c29a65", "assessment_id": "1eb9454f-b893-4973-897b-da5c8ef51eab", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Look at the picture and select the alternative which less describes it.</p><p>&nbsp;</p><p><strong>&nbsp;<img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXdQdAa0b1gnW3xdotZb3j9wnIZsrdY7UjFLh1I9K9F0YebtkYF5M7hOfZyicdsEEQy0FkLQjLQp9V6lvMTYph2ROcSM1foDSYLRe-EpN0wwfcp9aNlgZTl3szrJR6XsSTFL-zARbqvDQwKlCO3V11aY2kl4?key=GtqJju9l6mfpiPmcPZDDPw\"></strong></p>", "media": null, "options": [{"option_id": "7199f644-3cfd-4347-9bd8-4c9e2eda681e", "content": "relaxation", "image_url": ""}, {"option_id": "c838a699-db37-4247-9a3b-03f6dafab888", "content": "language learning", "image_url": ""}, {"option_id": "fd1725f2-7f72-4f4c-9ff0-6e25c5e893d7", "content": "culture and traditions", "image_url": ""}, {"option_id": "718da197-34b8-4cb5-8472-519745e80151", "content": "medium of communication", "image_url": ""}], "answer": null}, {"question_id": "a753104b-e60c-46b9-820a-16d5c8c2a5cc", "assessment_id": "1eb9454f-b893-4973-897b-da5c8ef51eab", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the best alternative for the word \u201ctied to\u201d in this sentence:</p><p>&nbsp;</p><p>\u201cAnd then I saw how tied the language was to the culture.\u201d</p><p><br></p>", "media": null, "options": [{"option_id": "664ed5bd-ab63-4755-83a4-b7364f29955f", "content": "influenced", "image_url": ""}, {"option_id": "5c2d2091-1e3b-48ca-8aaa-1c9aa34863c8", "content": "connected to", "image_url": ""}, {"option_id": "4b3ce0df-e408-41b0-9422-cfa68e3ce829", "content": "mixed", "image_url": ""}, {"option_id": "17f001a7-0d61-4d0a-8683-a803769a816e", "content": "unrelated to", "image_url": ""}], "answer": null}, {"question_id": "15c4af9e-c71b-4a52-ac18-e1daffebd299", "assessment_id": "1eb9454f-b893-4973-897b-da5c8ef51eab", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Which option is another correct way to say:</p><p>&nbsp;</p><p>\u201cIt wasn\u2019t exactly like the Spanish I thought I had known taking school classes, it was different.\u201d</p><p><br></p>", "media": null, "options": [{"option_id": "264fba53-e182-4969-a29a-ce67c8e9669d", "content": "It wasn't exactly what I had learned in Spanish lessons; it was different.", "image_url": ""}, {"option_id": "e5de2f8b-bde2-4184-80af-de0b7f5a03ec", "content": "It wasn't exactly what I was learning in Spanish classes; it was different.", "image_url": ""}, {"option_id": "8cc1ed29-d098-47cd-9758-3e9b2545b7bb", "content": "It wasn't exactly what I had learned in Spanish; it was different.", "image_url": ""}, {"option_id": "f4f8f81c-06bc-42ac-8e5f-cb28eea5c0ed", "content": "It wasn't exactly what I would learn in Spanish lessons; it was different.", "image_url": ""}], "answer": null}, {"question_id": "ec00d78b-9e5b-4fc4-9f3d-710d7e8818c7", "assessment_id": "1eb9454f-b893-4973-897b-da5c8ef51eab", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Adam says, \u201cSo, I guess my hometown technically would be in Illinois, in the city I was born in Illinois. But I\u2019ve spent most of my life in Richmond, Virginia. So, that\u2019s probably what I\u2019m most familiar with. I definitely made a lot of friends that listen to, for example, country music. My dad had a big influence on me. And country music was like something I grew up listening to.\u201d</p><p><br></p><p>Read the text and select the correct statement:</p><p><br></p>", "media": null, "options": [{"option_id": "3d54873c-1a1e-43db-8d81-6f9b8ef16ef4", "content": "Language can serve as a form of cultural expression. ", "image_url": ""}, {"option_id": "bef4fa02-a337-4ec0-bd0a-95b4542e909c", "content": "Making friends contributes to one\u2018s sense of self.", "image_url": ""}, {"option_id": "c74bd8f9-48a8-4df8-9b21-e2430d22cd51", "content": "The type of music one is exposed to can become an integral part of their cultural identity.", "image_url": ""}, {"option_id": "204f3eb9-5e6a-4197-b69e-f933ae63449e", "content": "The place where you are born shapes one\u2019s cultural identity.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "1f240f33-1bc1-4ec0-b7fd-096eb4dbfbbb", "assessment_id": "0ac19a6b-96ec-4652-a97b-6bfb7e54575d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Complete a frase:</p><p><br /></p><p><em>I have one sister and two brothers, so I have __________.</em></p>", "media": null, "options": [{"option_id": "10f72357-d66b-451f-8c1b-b29b6989a275", "content": "three brothers", "image_url": ""}, {"option_id": "b8a555f4-d3aa-425d-9656-82a04da91407", "content": "three sisters", "image_url": ""}, {"option_id": "2b396ffb-2314-41af-b01e-149d1447db9d", "content": "three siblings", "image_url": ""}, {"option_id": "2210680a-743c-41cf-899c-874581985d3a", "content": "three parents", "image_url": ""}], "answer": {"option_id": "2210680a-743c-41cf-899c-874581985d3a", "feedback": "Em ingl\u00eas, para dizer que voc\u00ea tem irm\u00e3os (homens ou mulheres), se usa \u201csiblings\u201d.", "correct_option_id": "2b396ffb-2314-41af-b01e-149d1447db9d"}}, {"question_id": "db276b44-f95a-4963-8f6d-9ec876c73572", "assessment_id": "0ac19a6b-96ec-4652-a97b-6bfb7e54575d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Complete o di\u00e1logo:</p><p><br /></p><p><em>\u00a0- Hello! What\u2019s your name?</em></p><p><em>- ______________</em></p>", "media": null, "options": [{"option_id": "e57695c0-38b1-4e64-a174-6d1f647b999c", "content": "Hey! I\u2019m sad.", "image_url": ""}, {"option_id": "90807166-9660-4ba0-8842-2f2df1689be3", "content": "Hello, what is your name?", "image_url": ""}, {"option_id": "fcccd61b-da99-40c7-9360-f1c36611c649", "content": "Hey! I\u2019m Cassie!", "image_url": ""}, {"option_id": "0c2f40f2-547b-4513-af10-c4a4d1143c5a", "content": "My brother\u2019s name is Jake.", "image_url": ""}], "answer": {"option_id": "fcccd61b-da99-40c7-9360-f1c36611c649", "feedback": "Ao responder uma pergunta sobre o seu nome, a resposta mais comum \u00e9 \u201cMy name is\u2026\u201d ou \u201cI am\u2026\u201d seguido do seu nome.", "correct_option_id": "fcccd61b-da99-40c7-9360-f1c36611c649"}}, {"question_id": "c2164ebc-9867-41db-b0bd-717f6d0bce14", "assessment_id": "0ac19a6b-96ec-4652-a97b-6bfb7e54575d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Escolha a alternativa que explica corretamente a frase a seguir:</p><p><br /></p><p><em>Cassie said: \u201cI\u2019m really close to my brother, but he lives in New York now.\u201d</em></p><p><em>Cassie disse: \u201cSou muito pr\u00f3xima ao meu irm\u00e3o, mas ele vive em Nova Iorque agora.\u201d</em></p>", "media": null, "options": [{"option_id": "13e417fe-691b-4a73-b00d-566fc424671c", "content": "She doesn't like her brother anymore.", "image_url": ""}, {"option_id": "ab484ae0-4d35-4b32-809e-f313cc099772", "content": "She doesn't have a brother.", "image_url": ""}, {"option_id": "3a647912-6245-43c5-9c96-8aa3ff4987a8", "content": "She lives in New York with her brother.", "image_url": ""}, {"option_id": "0d02dead-3fa8-4def-b8dd-36caaadfb006", "content": "Her brother lives in New York, but she doesn\u2019t.", "image_url": ""}], "answer": {"option_id": "0d02dead-3fa8-4def-b8dd-36caaadfb006", "feedback": "A justificativa adequada \u00e9 \"Her brother lives in New York, but she doesn't.\" (Seu irm\u00e3o mora em Nova Iorque, mas ela n\u00e3o.)", "correct_option_id": "0d02dead-3fa8-4def-b8dd-36caaadfb006"}}, {"question_id": "e9f0e9df-2a8e-4949-9933-7d236ffe80de", "assessment_id": "0ac19a6b-96ec-4652-a97b-6bfb7e54575d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analise a imagem abaixo e marque a alternativa que completa corretamente a frase a seguir</p><p><br /></p><p><em>She has to go to _____________.</em></p><p><br /></p><img src=\"https://cdn-jirafales.fluencyacademy.io/content/images/4558ba07-30fa-4c28-81f3-81c78bcdcd24\" height=\"500\" width=\"500\" /><p><br /></p>", "media": null, "options": [{"option_id": "700d5d3f-7576-4d83-89ce-9c7b5fc5dba3", "content": "the doctor", "image_url": ""}, {"option_id": "f216234d-aac5-4603-85ab-9adb11051df0", "content": "the medic", "image_url": ""}, {"option_id": "743c1189-dbc5-49fb-8c0e-77f9b98c8c5c", "content": "work", "image_url": ""}, {"option_id": "8165cb4a-9f60-4b55-adec-f4e45b1009ae", "content": "the nurse", "image_url": ""}], "answer": {"option_id": "700d5d3f-7576-4d83-89ce-9c7b5fc5dba3", "feedback": "A pessoa na imagem est\u00e1 doente, logo, precisa ir ao m\u00e9dico. Em ingl\u00eas, \u201cm\u00e9dica(o)\u201d \u00e9 \u201cdoctor\u201d.", "correct_option_id": "700d5d3f-7576-4d83-89ce-9c7b5fc5dba3"}}, {"question_id": "0f0ae780-bdba-4c4e-a7ca-d7a2e7cd1b24", "assessment_id": "0ac19a6b-96ec-4652-a97b-6bfb7e54575d", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analise a imagem e marque a afirmativa correta sobre a profiss\u00e3o da pessoa:</p><p><br /></p><img src=\"https://cdn-jirafales.fluencyacademy.io/content/images/d5abd326-9c62-49fe-841d-0c5f4f7b473c\" height=\"500\" width=\"500\" /><p><br /></p>", "media": null, "options": [{"option_id": "f7328425-532d-46f9-bea3-5f13aa2fe7d1", "content": "He likes eating.", "image_url": ""}, {"option_id": "ce31644f-54ce-4cbf-928b-914199004cf6", "content": "He\u2019s a cook.", "image_url": ""}, {"option_id": "7d75f64e-bfd4-4233-8a15-81d33b63a64f", "content": "She is his girlfriend.", "image_url": ""}, {"option_id": "f55c7c10-74ee-4efb-84ec-9358a255fcc4", "content": "He\u2019s a waiter.", "image_url": ""}], "answer": {"option_id": "ce31644f-54ce-4cbf-928b-914199004cf6", "feedback": "O homem da foto est\u00e1 cozinhando e vestindo um uniforme de cozinha, ent\u00e3o pode-se dizer que ele \u00e9 um cozinheiro.", "correct_option_id": "ce31644f-54ce-4cbf-928b-914199004cf6"}}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

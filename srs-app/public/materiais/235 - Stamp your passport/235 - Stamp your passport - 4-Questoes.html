@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "91ee1a4c-ebc2-499b-a382-8b62ad051cb0", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio and choose the correct alternative:</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/FLUENCY_HUB_UN05- Hey Lisa, I heard you're going.mp3"}, "options": [{"option_id": "bd8d6218-b00d-47c6-abd5-c403a8238e77", "content": "Lisa is apprehensive about traveling alone.", "image_url": ""}, {"option_id": "82365355-5de1-42a9-9ca6-ab1ffa4a55ad", "content": "Lisa sees this solo trip as a unique, one-time experience.", "image_url": ""}, {"option_id": "d43e3849-15c7-4ae4-b683-ef9de91eddea", "content": "Lisa plans to make solo travel a part of her life in the future.", "image_url": ""}, {"option_id": "b089178a-9070-4cbd-9fa1-8a7bcc65fb8c", "content": "Mike discourages Lisa from going on the solo trip.", "image_url": ""}], "answer": null}, {"question_id": "1de428bc-2d80-498e-88e1-e85db49d7834", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the alternative that best completes the sentence:</p><p><br /></p><p><em>In the highly competitive job market, you need to __________ to get noticed by potential employers.</em></p><p><br /></p>", "media": null, "options": [{"option_id": "95d32bb6-d138-4f1a-b1cf-b07153cce416", "content": "blend in with the crowd", "image_url": ""}, {"option_id": "0a81801c-979e-4f3c-9673-1532377894a7", "content": "be just like everyone else", "image_url": ""}, {"option_id": "c59f87fa-45de-4803-b2c4-9a22c813c980", "content": "follow the standard path", "image_url": ""}, {"option_id": "386b5cbf-82c1-4ae1-a43f-7539663f100c", "content": "stand out from the rest", "image_url": ""}], "answer": null}, {"question_id": "a4d3ece7-3b1d-4d15-9fe0-ae0deb96685e", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Sort the sentences according to the correct sequence of events:</p><p><br /></p><ol><li><span></span>And then she goes, \"We should start planning now so we can make it happen before we have too many responsibilities.\"\u00a0</li><li><span></span>My wife goes, \"I've been thinking about our future, and I really think we should prioritize traveling and experiencing new things together.\"</li><li><span></span>I go, \"That sounds amazing, but we should also consider our long-term goals, like buying a house and starting a family.\"</li><li><span></span>And then I'm like, \"You're right. We could save up for a big trip and then focus on our other goals when we return.\"</li></ol><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "b54bcc31-dcb0-4acf-8c4a-dc04c548b8fb", "content": "2, 3, 4, 1", "image_url": ""}, {"option_id": "2afa4079-2781-4dec-8990-655a4ad15507", "content": "3, 2, 1, 4", "image_url": ""}, {"option_id": "bb964e64-4aaa-43b8-a68d-919e12ee32f5", "content": "4, 1, 2, 3", "image_url": ""}, {"option_id": "22c98d48-046a-4c56-abbc-d2a590a8d7d1", "content": "1, 4, 3, 2", "image_url": ""}], "answer": null}, {"question_id": "af59bd78-e88a-470e-8e5b-2e3609145103", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Read the text and answer the question:</p><p><br /></p><p>Science fiction is a genre that pushes the boundaries of our imagination and challenges us to think beyond our current reality. It explores complex social, political, and philosophical questions in engaging and thought-provoking ways. Science fiction allows us to consider possibilities that may seem far-fetched but could one day become reality, encouraging us to think critically about the world we live in and the choices we make as a society.</p><p>Moreover, science fiction has the power to inspire real-world change. Many of the technologies we take for granted today were once considered the stuff of science fiction. By imagining these possibilities, science fiction writers have helped to drive scientific and technological progress forward. As we look to the future, science fiction will continue to play an important role in shaping our understanding of the world and our place in it.</p><p><br /></p><p><strong>According to the text, how can science fiction inspire real-world change?</strong></p><p><br /></p>", "media": null, "options": [{"option_id": "e82f98b7-2519-4d68-89c5-cbab8fb0deed", "content": "By predicting the future with perfect accuracy and allowing us to prepare for it in advance.", "image_url": ""}, {"option_id": "f3dc2c97-8801-45be-8601-385e35c0d164", "content": "By imagining possibilities that may seem far-fetched but could one day become reality, driving scientific and technological progress.", "image_url": ""}, {"option_id": "bbf9ded7-a686-400d-8ac0-5eaefbf24543", "content": "By creating imaginary futures that are so dystopian that they motivate us to change our current society for the better.", "image_url": ""}, {"option_id": "f6ae04fa-bce0-41e9-9f4b-c82ce863db30", "content": "By encouraging people to abandon reality altogether and live in a fantasy world of their own creation.", "image_url": ""}], "answer": null}, {"question_id": "65ddcfe6-ae0a-485f-831c-12588ad27df0", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Which sentence best describes the meaning of the word<strong> \"entrepreneurship\"</strong>?</p><p><br /></p>", "media": null, "options": [{"option_id": "3aa657c7-f130-45d5-ad47-48731df90c4f", "content": "The act of investing money in well-established companies to generate passive income.", "image_url": ""}, {"option_id": "af91a307-0b1f-45a3-9f46-ffe33f5e4ee4", "content": "The process of working for a large corporation and climbing the corporate ladder.", "image_url": ""}, {"option_id": "db5f4f95-b082-4d8a-8590-07921eafb225", "content": " The practice of starting and running your own business, taking on financial risks.", "image_url": ""}, {"option_id": "668a3523-0eb3-4386-a799-1cd4e9bbc32e", "content": "The habit of frequently changing jobs to gain experience in different industries.", "image_url": ""}], "answer": null}, {"question_id": "a70b052d-3e05-4fd1-8479-80b6e9fb3b04", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the alternative that best completes the dialogue:</p><p><br /></p><p><em>A: I'm thinking about going to the beach this weekend.</em></p><p><em>B: __________, but I might have to work on Saturday.</em></p>", "media": null, "options": [{"option_id": "398f19fc-4f24-4755-bded-ce6f22c2da82", "content": "Yeah, that sounds great! Count me in or something like that", "image_url": ""}, {"option_id": "cb69a01e-6578-4c40-9b94-5015eef06012", "content": "Sure, I'll definitely be there, no excuses", "image_url": ""}, {"option_id": "ee491972-cc50-4cee-a476-00ec8f37f535", "content": "I'd love to join you or something like that", "image_url": ""}, {"option_id": "bcd3a2d7-9f8e-45b5-a7bb-adefa07951d6", "content": "Absolutely, I wouldn't miss it for the world", "image_url": ""}], "answer": null}, {"question_id": "d57ff05a-7b23-4689-b577-0dfbbd35e5de", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio and choose the correct alternative:</p><p><br /></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/PRONUNCIATION_HACKS_UN06-My dear friend, I must offer my sincerest apologies.mp3"}, "options": [{"option_id": "43265267-d6e2-43ce-806e-83bacab32935", "content": "The speaker is making a sincere apology and asking for forgiveness.", "image_url": ""}, {"option_id": "16388e20-60f3-4886-9aa4-095770a78d4c", "content": "The speaker is expressing excitement about an upcoming event.", "image_url": ""}, {"option_id": "1be28357-71fd-4a90-8a8b-c435342dfa9b", "content": "The speaker is declining an invitation due to prior commitments.", "image_url": ""}, {"option_id": "69478e91-5b7d-40c6-9176-07c0a4f8124f", "content": "The speaker is asking the listener to keep a secret.", "image_url": ""}], "answer": null}, {"question_id": "65dd0ed3-2580-44f5-80a5-c880b34ef340", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Complete the sentences using the words provided:</p><p><br /></p><p><em>If only I had ______ (1) my promise to my friend, our relationship wouldn't have suffered. I feel a deep sense of ______ (2) for the lost opportunity to ______ (3) our friendship. My biggest ______ (4) is to make amends and rebuild the trust we once had. Although it's a challenging situation, I'm trying to maintain an ______ (5) attitude and learn from my mistakes.</em></p><p><br /></p>", "media": null, "options": [{"option_id": "324a203e-5cbc-4463-b34a-88df90418d9f", "content": "kept / longing / enhance / aspiration / uplifting", "image_url": ""}, {"option_id": "8ac3997c-a945-4fad-8f98-e39de3e6e2b2", "content": "broken / excitement / damage / dream / pessimistic", "image_url": ""}, {"option_id": "2411a7e0-e54e-4087-a22e-c34af1c39b12", "content": "forgotten / happiness / destroy / nightmare / apathetic", "image_url": ""}, {"option_id": "537a61b0-9f32-4d1b-abc3-eaeaf8615271", "content": "remembered / indifference / neglect / fear / discouraging", "image_url": ""}], "answer": null}, {"question_id": "a5f940e0-937f-4ef7-b4f7-a1dcc8d2b489", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Read the text and answer the question:</p><p><br /></p><p>Cultural differences can greatly influence the way people interact and communicate with one another, particularly when it comes to invitations, offers, apologies, and excuses. In some cultures, such as the United States, people tend to be more direct and straightforward in their communication style. Invitations are often extended casually, and it's generally acceptable to decline politely if one is not interested or available. In contrast, other cultures, such as Brazil, place a greater emphasis on maintaining harmony and avoiding confrontation.\u00a0</p><p>Invitations may be extended more formally, and declining an invitation may require a more elaborate excuse to avoid offending the host. Similarly, when it comes to apologies, some cultures may prioritize a sincere and heartfelt expression of regret, while others may focus more on making amends and finding a solution. Navigating these cultural differences can be challenging, but it's essential for building strong, respectful relationships across borders. By taking the time to learn about and understand the communication norms and expectations of other cultures, we can foster greater empathy, collaboration, and trust in our personal and professional interactions.</p><p><br /></p><p><strong>According to the text, what is the main challenge in navigating cultural differences in communication?</strong></p><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "cf721a5e-cd39-4938-8ef8-7289cbca9c29", "content": "Learning the language of the other culture", "image_url": ""}, {"option_id": "1e3ebc0c-f9f7-43fa-a4e0-838821a67752", "content": "Convincing others to adopt your own cultural norms", "image_url": ""}, {"option_id": "c3782fa4-82eb-4e0f-841c-c3ffb9e6cb8d", "content": "Understanding and adapting to different communication norms", "image_url": ""}, {"option_id": "c7bac3a9-fa1d-4350-9816-c63e0f42478d", "content": "Avoiding interactions with people from different cultural backgrounds", "image_url": ""}], "answer": null}, {"question_id": "504c0107-4086-4fde-b0ef-53d99edf24f5", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the alternative that correctly applies the use of the expression<strong> \"break the ice\":</strong></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "6e0b694c-faff-4a66-a951-9a1b1aac8f38", "content": "After the heated argument, the two friends decided to break the ice and never speak to each other again.", "image_url": ""}, {"option_id": "03023430-5d5b-43f9-bd20-8eed9249dc9e", "content": "The team-building activity was designed to break the ice and help colleagues feel more comfortable with one another.", "image_url": ""}, {"option_id": "acb1b78c-0f23-4472-b7e5-bbd147ee2adb", "content": "The negotiators tried to break the ice by making unreasonable demands and refusing to compromise.", "image_url": ""}, {"option_id": "02edb789-c2cc-4231-bc26-e9b392c85b74", "content": "The speaker attempted to break the ice by telling a long, complicated story that left the audience confused.", "image_url": ""}], "answer": null}, {"question_id": "3e2f865d-66e8-464a-a5d6-4692cc240c9d", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 11, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio. What significant event made people realize that pollution was a global issue?</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/FLUENCY_HUB_UN07-I remember when the first Earth Day.mp3"}, "options": [{"option_id": "9f5bb83e-b029-4141-9726-462311ea47f3", "content": "The creation of the Environmental Protection Agency", "image_url": ""}, {"option_id": "e100312b-3494-4755-8e9d-8f47756105ad", "content": "The founding of Earth Day", "image_url": ""}, {"option_id": "59eba4a4-9413-48bb-9eaf-5530324f39fd", "content": "The ban on leaded gas", "image_url": ""}, {"option_id": "34c5dc1a-f35a-461a-b2ee-9c5287489ae6", "content": "Actively going to and walking on the Moon", "image_url": ""}], "answer": null}, {"question_id": "40f2f1dc-61cc-4917-9668-11388063111a", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 12, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the sentence that best conveys a sense of surprise:</p><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "ea4e32ee-54a9-4b92-b68d-c4ba26a535d1", "content": "I had a feeling that the package would arrive today, just as I expected!", "image_url": ""}, {"option_id": "0a102843-3b34-4822-9423-6c7d132ee130", "content": "I can't believe my eyes! I never thought I'd see the day when pigs could fly!", "image_url": ""}, {"option_id": "513cb9a8-3442-4121-b87d-0a6e1cdf81ca", "content": "It's not unusual for the weather to be this warm during the summer months.", "image_url": ""}, {"option_id": "dbc90894-1eff-4cfa-8874-39240426759b", "content": " I'm fairly certain that the store will be open until 9 PM, as it always is on weekdays.", "image_url": ""}], "answer": null}, {"question_id": "ba8d469a-015a-464a-89e7-a6c11d05c95b", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 13, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the audio<strong>. </strong>What is the main purpose of the speaker's message?</p><p><br /></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/PRONUNCIATION_HACKS_UN07-If you do decide to take the job.mp3"}, "options": [{"option_id": "d96a601a-66b9-4584-b8ec-7f19f7f3dedc", "content": "To persuade the listener to accept a job offer at the speaker's company", "image_url": ""}, {"option_id": "d38da008-5478-455c-88b6-493bdf37c2ad", "content": "To express concern about the listener's potential job offers from other companies", "image_url": ""}, {"option_id": "10e4e189-61f5-485f-b510-3fcc79d4b3e4", "content": "To inform the listener about the company's salary and bonus structure", "image_url": ""}, {"option_id": "1829e13b-694d-49ba-a3fa-4017f2b52d9e", "content": "To assess the listener's skills and experience for a potential job opening", "image_url": ""}], "answer": null}, {"question_id": "8b6e07fd-83f6-4fe7-bd45-d818a2cc99b7", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 14, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Read the following text and answer the question below:</p><p><br /></p><p>As the gaming industry continues to evolve, it is becoming increasingly clear that the demographics of video game players are shifting. While gaming was once considered a pastime primarily enjoyed by children and teenagers, recent studies suggest that the average age of gamers is rising steadily. This trend can be attributed to a variety of factors, including the aging of long-time gamers who have grown up with the medium, as well as the increasing accessibility and diversity of video game content.\u00a0</p><p>As a result, game developers and marketers are beginning to recognize the importance of catering to the unique preferences and needs of older gamers, who often have different expectations and priorities than their younger counterparts. By embracing this demographic shift and creating games that appeal to a wider range of ages and interests, the gaming industry can continue to thrive and grow in the years to come.</p><p><br /></p><p><strong>According to the passage, what is one factor contributing to the rising average age of video game players?</strong></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "bdc34fc4-55c1-4900-a5dd-e38af1fbd544", "content": "The increasing complexity of video game mechanics and controls", "image_url": ""}, {"option_id": "bad63be7-ea2f-499f-bc80-8d49ae5a7021", "content": "The declining interest in gaming among younger generations", "image_url": ""}, {"option_id": "3a17ce02-fad2-4ec2-97c0-fa50c5886b8e", "content": "The aging of long-time gamers who have grown up with the medium", "image_url": ""}, {"option_id": "569e7a4c-0f15-4a81-a916-d24837454be5", "content": "The introduction of age restrictions on certain types of video game content", "image_url": ""}], "answer": null}, {"question_id": "4f76b563-59c7-4411-be37-a5834f216c3d", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 15, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the sentence that correctly uses the expression <strong>\"to bear in mind\"</strong>:</p><p><br /></p>", "media": null, "options": [{"option_id": "27617502-1c54-4244-ac5d-15f9044a0283", "content": "The hikers had to bear in mind the heavy backpacks as they trudged through the mountains.", "image_url": ""}, {"option_id": "f3da4dd5-02d0-49e7-896a-ceb7c3fedc78", "content": "When making a decision, it's essential to bear in mind the potential consequences and weigh them carefully.", "image_url": ""}, {"option_id": "5cf97650-fe0b-452c-b36b-f6a8ed388674", "content": "The students were asked to bear in mind their textbooks for the upcoming open-book exam.", "image_url": ""}, {"option_id": "80cf4520-9c31-46ad-8383-0f39bcf6b6ea", "content": "The chef had to bear in mind the delicate souffl\u00e9 as he rushed to serve the other dishes.", "image_url": ""}], "answer": null}, {"question_id": "217adfd8-0c5d-4234-ad30-10e911199823", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 16, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the sentence that correctly uses the imperative form to give instructions:</p><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "5b52d6fe-110d-47b5-b890-25821eda4dca", "content": "You could try to maintain three points of contact with the wall at all times, if you don't mind.", "image_url": ""}, {"option_id": "f4853e2e-0151-4915-a8f4-ffdec35d7449", "content": "It would be nice if you could chalk up your hands before attempting the climb.", "image_url": ""}, {"option_id": "fbf1cb8a-1e4a-4544-880e-1ddd2cd18741", "content": "Keep your arms slightly bent and your body close to the wall for better balance and control.", "image_url": ""}, {"option_id": "1178d492-7990-470e-b95a-09618317ecf8", "content": "I was wondering if you might be interested in focusing on your foot placement during the climb.", "image_url": ""}], "answer": null}, {"question_id": "1f07afbf-b91d-40d3-a658-b071090b78aa", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 17, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>What does the speaker want the listeners to think of their fellow squad members as?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/PRONUNCIATION_HACKS_UN08-Listen up, everyone. We're about to embark.mp3"}, "options": [{"option_id": "db5cafd4-1f9b-4c60-8954-99bfedb421d1", "content": "Competitors", "image_url": ""}, {"option_id": "f7e06210-3d68-4c4a-8edc-8ecdf9e4c9ca", "content": "Acquaintances", "image_url": ""}, {"option_id": "c5d28bbb-dd09-415c-9fcc-3f20db34f736", "content": "Family", "image_url": ""}, {"option_id": "1d1074ae-2f79-414a-be53-4e9fa3679ccf", "content": "Subordinates", "image_url": ""}], "answer": null}, {"question_id": "59c054b0-9f6b-431b-8ee3-4f23fb71d923", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 18, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the sentence that best illustrates the figurative use of the phrasal verb<strong> \"set aside\":</strong></p><p><br /></p>", "media": null, "options": [{"option_id": "99e412a6-743d-4646-abd2-be7932bd1ebf", "content": "The mediator asked the disputants to set aside their differences and find common ground.", "image_url": ""}, {"option_id": "408b66ba-8465-46c2-b515-27e65fadd965", "content": "The chef set aside a portion of the dish for the food critic to taste.", "image_url": ""}, {"option_id": "30e30d55-8238-4144-97c7-b506b2668004", "content": "The students were told to set aside their textbooks and focus on the lecture.", "image_url": ""}, {"option_id": "723b0f52-5d93-4b3d-b21e-a2b85bfa8e9c", "content": "The hikers set aside their backpacks and took a break near the stream.", "image_url": ""}], "answer": null}, {"question_id": "84ab49e0-f9aa-47c9-989e-d446647ab791", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 19, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>According to the speaker, what has been lost in conversations?</p><p><br /></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/GET_THE_TALK_UN08-In our modern world, every conversation.mp3"}, "options": [{"option_id": "c22a4398-b9fe-4506-af08-65932e353be7", "content": "The ability to express personal opinions", "image_url": ""}, {"option_id": "974fd6c1-8440-4cf3-943f-c91a203eb73c", "content": "The balance between talking and listening", "image_url": ""}, {"option_id": "43272b43-b523-46ba-bbf4-757987f8cf83", "content": "The desire to have meaningful discussions", "image_url": ""}, {"option_id": "737cb408-6b35-4932-a435-40423885e357", "content": "The willingness to argue and debate", "image_url": ""}], "answer": null}, {"question_id": "671c9230-fa02-4bdd-91cb-fed26c7b4b12", "assessment_id": "bd8d601e-1e34-4f53-aef2-ce6d42ee280c", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 20, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Navigating the complexities of a new culture can be a daunting experience, filled with both excitement and uncertainty. When immersing oneself in an unfamiliar environment, it's crucial to approach the situation with an open mind and a willingness to learn. This process of cultural adaptation often requires individuals to unlearn certain customs and behaviors that may be deeply ingrained in their own culture, while simultaneously embracing new ways of thinking and interacting with others.\u00a0</p><p>It's important to remember that cultural differences are not inherently right or wrong, but rather a reflection of the unique histories, values, and experiences that shape each society. By approaching these differences with curiosity, respect, and a desire to understand, individuals can bridge the gap between cultures and foster meaningful connections with people from diverse backgrounds. Ultimately, the key to successful cultural navigation lies in one's ability to remain open, adaptable, and resilient in the face of change.</p><p><br /></p><p><strong>According to the passage, what is one essential aspect of successfully navigating a new culture?</strong></p><p><br /></p>", "media": null, "options": [{"option_id": "2c2d29a0-8206-49b8-bf9d-95f90b526ac7", "content": "Insisting on maintaining one's own cultural practices and beliefs", "image_url": ""}, {"option_id": "56e7cb82-b52a-4397-988c-973cd059ae45", "content": "Avoiding interactions with locals to minimize the risk of cultural misunderstandings", "image_url": ""}, {"option_id": "4def7a8a-ab10-4e51-ab95-2be15b280534", "content": "Approaching cultural differences with curiosity, respect, and a desire to understand", "image_url": ""}, {"option_id": "ded4e397-2ec0-48f8-a8a6-3bf97a084a9c", "content": "Expecting others to adapt to one's own cultural norms and behaviors", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "c04ed0fb-3c80-4cff-8170-41879eba681a", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio e responda: Qual g\u00eanero de filme o homem est\u00e1 com vontade de assistir?</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/COMPREHENSION_PRACTICE_U01_I'm in the mood.mp3"}, "options": [{"option_id": "a779bea6-f83d-4323-aa52-db303162364d", "content": "Romantic comedy.", "image_url": ""}, {"option_id": "75735e75-fd36-4510-86af-b187832d7952", "content": "Action movie.", "image_url": ""}, {"option_id": "02010da3-c9b2-4c24-a89c-e334ac465cea", "content": "Documentary.", "image_url": ""}, {"option_id": "262f8e14-77fe-4098-847f-e49db8d9d13f", "content": "Mystery movie.", "image_url": ""}], "answer": null}, {"question_id": "b0527298-23b3-4d12-b885-4b0b6eedde46", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como voc\u00ea diria \"Voc\u00ea est\u00e1 passando tempo demais no YouTube e na Netflix\" em ingl\u00eas?</p><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "e34a6210-33ae-4d3b-ac5c-6353e90a6aec", "content": "You are spending too much time on YouTube and Netflix.", "image_url": ""}, {"option_id": "7079d7f4-ccbc-4ccf-bb95-28038057b3a0", "content": "You spend time enough on YouTube and Netflix.", "image_url": ""}, {"option_id": "78eb73e6-e936-4b93-bc8b-c7e4b70c6d29", "content": "Are you spending many times on YouTube and Netflix?", "image_url": ""}, {"option_id": "915c2161-38b9-462a-8409-7fa6831c133c", "content": "Do you spend much time on YouTube and Netflix?", "image_url": ""}], "answer": null}, {"question_id": "03f66a3b-d10c-4bf8-9e3d-9e88a780b4fc", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Complete o di\u00e1logo abaixo entre dois amigos que est\u00e3o conversando sobre suas atividades de fim de semana:</p><p><br /></p><p><em>A: How often do you play soccer?</em></p><p><em>B: _______________________________</em></p><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "cbf406bf-1dec-4290-99ba-9202966164ce", "content": "I am playing soccer right now.", "image_url": ""}, {"option_id": "d58eb899-ad95-4472-a041-ef0587107e0e", "content": "I play soccer with my friends.", "image_url": ""}, {"option_id": "266ce79a-c17a-424b-8cdd-157ae60d1066", "content": "I play soccer every weekend.", "image_url": ""}, {"option_id": "49518f6a-20c3-4568-b401-66849ef79220", "content": "I am a great soccer player.", "image_url": ""}], "answer": null}, {"question_id": "cca2b9f8-804d-47aa-a6c9-a79951bde05a", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Qual das seguintes frases poderia ser uma resposta adequada a <strong>\"How\u2019s it going?\"</strong></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "b1927eb9-97e7-4d88-a005-c9933a84c345", "content": " I\u2019m so-so.", "image_url": ""}, {"option_id": "1202ff2b-2864-4383-908b-d04192640ef3", "content": "What\u2019s up?", "image_url": ""}, {"option_id": "f839986d-6970-4c10-ac5a-1b7697f77b19", "content": "Good evening.", "image_url": ""}, {"option_id": "8f935947-2080-4491-8c28-b37a6821a940", "content": "Not much, what\u2019s up with you?", "image_url": ""}], "answer": null}, {"question_id": "3cedf979-c362-4d8b-a8ac-c1e910881faa", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Complete a frase abaixo:</p><p><br /></p><p><em>\"At the karaoke night, he decided to ______ a song.\"</em></p><p><br /></p>", "media": null, "options": [{"option_id": "5c27908d-bed5-4b65-a9d1-66bba9a82902", "content": "draw", "image_url": ""}, {"option_id": "aa36ffd0-6dc9-4a87-bb20-95c5a9a235b5", "content": "write", "image_url": ""}, {"option_id": "66958bee-ebb2-4b6c-9ad2-692d0df9b9b1", "content": "sing", "image_url": ""}, {"option_id": "174bf288-7b84-4851-aa62-dc370071c935", "content": "cook", "image_url": ""}], "answer": null}, {"question_id": "9db8fd23-d043-4e8a-94d6-877e70e4504f", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e complete a frase:</p><p><br /></p><p><em>\u00a0\"Did you see that? ____ he running so fast?\"</em></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_U02_Did you see that.mp3"}, "options": [{"option_id": "b203439e-f01e-409b-b365-cb71fe1da626", "content": "\"Where's\"", "image_url": ""}, {"option_id": "28cd8ef8-3157-4c7b-8b8c-db9b95f7f288", "content": "\"When's\"", "image_url": ""}, {"option_id": "1405b083-4193-4645-b4c9-6b56c99dc7b0", "content": "\"Why's\"", "image_url": ""}, {"option_id": "acf9355c-e889-446e-95bc-e57765f57add", "content": "\"Who's\"", "image_url": ""}], "answer": null}, {"question_id": "a56e4a55-8ccc-41bc-88df-0bad8304bd55", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Leia o di\u00e1logo abaixo, o que os personagens decidem fazer?</p><p><br /></p><p><em>Ana: \"Do we have time to watch another episode?\"\u00a0</em></p><p><em>Jo\u00e3o: \"Sure, we can watch one more, but then I'd like to go outside and enjoy some fresh air.\"</em></p>", "media": null, "options": [{"option_id": "3510ef86-7ed8-48d5-b493-869be27160a0", "content": "Go to a gym to exercise.", "image_url": ""}, {"option_id": "20c71ab6-261f-487a-94f7-6e95fa3b8d26", "content": "Watch a movie.", "image_url": ""}, {"option_id": "548e0fc6-6637-4cfe-99ff-1c98329dbd4c", "content": "Continue watching the series.", "image_url": ""}, {"option_id": "e7880386-1c60-410e-9a50-d746936a437b", "content": "Play video games.", "image_url": ""}], "answer": null}, {"question_id": "f7465cea-86d3-400a-b07b-64f936fbb471", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e identifique qual express\u00e3o abaixo foi utilizada:</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/BORN_IN_THE_USA_U02_It was great.mp3"}, "options": [{"option_id": "1a95768e-374f-4010-a14a-ec4f93412233", "content": "\"See you later, alligator!\"", "image_url": ""}, {"option_id": "f7ea7877-661b-4895-889a-a6052795d2fc", "content": "Have a good one!\"", "image_url": ""}, {"option_id": "ea39af6b-c1d5-4599-99b0-6be61d1ff433", "content": "\"Keep it real!\"", "image_url": ""}, {"option_id": "d737f653-0387-489b-bc7f-bff81cdda114", "content": "\"Keep it going\"", "image_url": ""}], "answer": null}, {"question_id": "2843b9c0-eae9-4c31-9427-a4206feece5f", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Observe a imagem, qual item n\u00e3o est\u00e1 presente na sala de estar?</p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXeQQ90eP6rDaPSzyYP8HYcB8S2hloVFIZjK0TbwliKcDO1068Dri-uNVzFah78ELLKbck0QXotD6qNITz0Mcd3c9VcHbeikvg5l7xFC_WlWggWYUKDqSBUGUgCSP-2v09dGUjG85KbWyAI6owfWUIQ-5uMI?key=ai-SMjKRfT0hPDChvXeJmQ\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "99bf8887-1e0b-4b75-8159-a4cbf6c94a29", "content": "A television", "image_url": ""}, {"option_id": "39983d53-646d-4ac0-875b-9f3913745234", "content": "A couch", "image_url": ""}, {"option_id": "eeea18b1-d875-42a3-87c9-a139caa14af1", "content": "A mirror", "image_url": ""}, {"option_id": "e3177316-3452-4bba-a03a-4c8c644f0e00", "content": "A rug", "image_url": ""}], "answer": null}, {"question_id": "e4d3ffb4-30c3-4d66-a71e-4ec982b3fc16", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio. Qual a profiss\u00e3o de Alex?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/COMPREHENSION_PRACTICE_U03_Hello everyone i'm Alex.mp3"}, "options": [{"option_id": "78425aa4-057e-45db-9500-0e43020f7e73", "content": "A high school teacher", "image_url": ""}, {"option_id": "b86124ea-f707-4e28-883e-6d35ffd489d4", "content": "A software developer", "image_url": ""}, {"option_id": "056668ed-2f01-4b39-8694-5d30fa835ca3", "content": "A professional artist\u00a0\u00a0", "image_url": ""}, {"option_id": "7fc0e4d5-0623-4311-9acc-9b6e4ee11712", "content": "An experienced chef\u00a0", "image_url": ""}], "answer": null}, {"question_id": "98fc49cf-2d8e-41b6-a031-e7a3d001ff39", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 11, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Escolha a alternativa que cont\u00e9m a palavra que normalmente apresenta o som <strong><em>Schwa </em></strong>quando falada na seguinte frase:</p><p><br /></p><p><em>\"Is your dad a chef?\"</em></p><p><br /></p>", "media": null, "options": [{"option_id": "00918685-1728-49df-bd85-dff52177aca8", "content": "your", "image_url": ""}, {"option_id": "8f39e817-0277-493e-9d2f-322d8bf0768c", "content": "dad", "image_url": ""}, {"option_id": "0616a43b-b324-473d-ba38-33427d4aff08", "content": "a", "image_url": ""}, {"option_id": "62d00047-c642-448d-be4b-5aed5247e259", "content": "chef", "image_url": ""}], "answer": null}, {"question_id": "583297aa-13ae-46a3-a66e-077b4510c055", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 12, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Qual frase abaixo expressa corretamente uma a\u00e7\u00e3o que <strong>n\u00e3o</strong> ocorre habitualmente?</p><p><br /></p>", "media": null, "options": [{"option_id": "3cab84e8-5b5b-4c38-9f82-39bc43a54c7a", "content": "\"He enjoys reading on his tablet.\"", "image_url": ""}, {"option_id": "87615e0c-dc59-4f3d-bbb5-25f74a8d3d3f", "content": "\"She prefers to read on her tablet at night.\"", "image_url": ""}, {"option_id": "13e775f6-28be-4ec4-a991-f82f99c6e6e5", "content": "\"They sometimes read on their tablets during the day.\"", "image_url": ""}, {"option_id": "2a08c4f7-8761-465f-9c2e-059a1b98fe44", "content": " \"She rarely uses her tablet for reading.\"", "image_url": ""}], "answer": null}, {"question_id": "e00dd3ff-46e3-4c80-9ae5-68b7240cdd8a", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 13, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Leia as perguntas e selecione aquela que fala sobre uma a\u00e7\u00e3o habitual:</p><p><br /></p>", "media": null, "options": [{"option_id": "122f7c05-23fb-45fb-9984-cb66a5c1c7ba", "content": "\"Does she run every day?\"", "image_url": ""}, {"option_id": "876809d5-65d3-4452-a388-e8f8cd5e6bf1", "content": " \"Do you like to read books?\"", "image_url": ""}, {"option_id": "0cd01179-d2ea-44a6-9471-fb3f38bec829", "content": "\"Does your brother play soccer?\"", "image_url": ""}, {"option_id": "309a3761-1faa-49b5-b405-a41a27760b8b", "content": "\"Do they live with their grandparents?\"", "image_url": ""}], "answer": null}, {"question_id": "51d8f422-2547-46e4-9abf-ae3282e4924c", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 14, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Escolha a alternativa que expressa gratid\u00e3o de uma maneira informal e comum entre amigos pr\u00f3ximos.</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "0f315e39-c68f-4ae5-b700-110216e1df1a", "content": "Thanks, man!", "image_url": ""}, {"option_id": "1c58a05f-7647-451f-b233-25497355232e", "content": "Thank you very much.", "image_url": ""}, {"option_id": "572b350f-db93-4e25-83fe-b122f4736f5b", "content": "Many thanks.", "image_url": ""}, {"option_id": "3398c0ea-bf3f-4329-9599-b241570c82d8", "content": "I am so thankful for what you did.", "image_url": ""}], "answer": null}, {"question_id": "3cb6db17-f7d0-41e0-b26d-0e29fc7c3352", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 15, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Leia a frase e complete a lacuna com a op\u00e7\u00e3o correta de acordo com a imagem:</p><p><br /></p><p><em>\"I always go to the ______ after work on Mondays and Wednesdays.\"</em></p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXdKo7JU3QzAbhZn2TRikrVy4UrkxSUy_yulj-M0CaEtzI9F45e9Bvhf5UY4TseNOjZAJZ8lv9MVFqmRtA8bGQknUcCr38QbMWhIbiFuXtG6My5Cg79NtXgJ1lWwRv-xGf8rFcIkFcPn8Fa6aeOLzVXJPkk?key=ai-SMjKRfT0hPDChvXeJmQ\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "0954b15c-241e-43cf-a0d7-855f0be7ad17", "content": "office", "image_url": ""}, {"option_id": "21f95284-d616-4c1a-8155-f438c6d20e05", "content": "gym", "image_url": ""}, {"option_id": "402b7d4e-98f2-4149-a1b9-a8a0df5e14a2", "content": "park", "image_url": ""}, {"option_id": "00f4f45f-bd24-4dae-9dd5-5d2f00540fb6", "content": "library", "image_url": ""}], "answer": null}, {"question_id": "03ee4c21-5da6-4c91-a0d0-bfe0ce257e91", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 16, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Analise a imagem abaixo e escolha a alternativa que mais se encaixa com o que a pessoa diria naquele contexto:</p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXeqic4qv0D0G1f9zMgDzu0AdWdcda1r_NMxTDuAs12ZaxH_ddDy0g1fVwnwr57EPnFsjvvAcBW9FOa5O0gI-Tf55-ezcY4CbK884bQBFd1FJFzB1Bu2gDOHTKP4s4qOiRwZuY0cgB-Ujwob5_xvomyjnDs4?key=ai-SMjKRfT0hPDChvXeJmQ\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "1118838f-25b6-4add-85f4-d743ad1ed95b", "content": "I got a bad situation here with these files.", "image_url": ""}, {"option_id": "f8b9e0f2-d0ec-480e-b084-315f056a1a64", "content": "These documents are perfectly fine.", "image_url": ""}, {"option_id": "0c1ebdc5-e950-4aec-95da-48b63e26f308", "content": "Good idea! Let\u2019s print more copies right now.", "image_url": ""}, {"option_id": "088603bd-a7b2-403f-8083-a273ec68ab8b", "content": "Oh no! The papers are not here.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "3e12bf13-2424-4647-af44-ec2c4398108a", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 17, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio e selecione a frase que voc\u00ea ouve.</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_U04_Thanks but I'm.mp3"}, "options": [{"option_id": "827c1fad-462c-4460-9430-a23039a378e9", "content": "\"Thank you, but not Thursday.\"", "image_url": ""}, {"option_id": "097a46d8-2c48-4a18-9eb3-3e78d480fb01", "content": "\"Thanks, but I\u2019m now thirsty.\"", "image_url": ""}, {"option_id": "b01d9cb2-8179-4c11-b971-ea1ca07fb5db", "content": "\"Thanks, but I\u2019m not thirsty.\"", "image_url": ""}, {"option_id": "8f4c78aa-3ff9-40e5-b7d3-df0f75c384a5", "content": " \"Thank you, but I\u2019m thirsty.\"", "image_url": ""}], "answer": null}, {"question_id": "a11bac4d-25c7-45ad-b8df-1286a390a21f", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 18, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Leia o texto abaixo e escolha a op\u00e7\u00e3o que corretamente completa as frases.</p><p><br /></p><p><em>\"Hi! My name ___ Maria and I ___ from Spain. I ___ a student and I live in a small apartment in Madrid. My friends ___ really supportive, and they often come to visit. They think I ___ lucky to live in such a vibrant city.\"</em></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "984b62fc-b752-4a29-a744-6bd87ce09581", "content": "is / am / am / is / am", "image_url": ""}, {"option_id": "123c3bd3-4bf4-4657-80c6-6c2da0a8aa1f", "content": "am / is / are / are / is", "image_url": ""}, {"option_id": "df40ca14-e362-4ed8-a847-113c4a7a0690", "content": "is / are / are / am / are", "image_url": ""}, {"option_id": "05d22ea9-ef83-488a-94a2-db2f6006b064", "content": "is / am / am / are / am", "image_url": ""}], "answer": null}, {"question_id": "e51d5227-686b-4102-bf4f-4992ed4d16a7", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 19, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Escolha a alternativa que melhor completa a frase a seguir:</p><p><br /></p><p><em>\"Right now, he ___ a book about the history of Rome.\"</em></p><p><br /></p>", "media": null, "options": [{"option_id": "cf2a396f-f923-43ae-b2e0-a92d7e105522", "content": "read", "image_url": ""}, {"option_id": "149897a9-dd3a-4a35-8592-cde47e241316", "content": "doesn\u2019t read", "image_url": ""}, {"option_id": "e3fcf941-cfe5-4e61-907a-8850a31f28d5", "content": " is reading", "image_url": ""}, {"option_id": "4b3ba079-dd05-411e-8a0d-929186b6d468", "content": "reading", "image_url": ""}], "answer": null}, {"question_id": "38f78797-4eaf-46d7-b0ae-1f7e128ae391", "assessment_id": "52dadd86-1961-431a-a5f6-ad0ebeb9f238", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 20, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Observando a imagem, escolha a op\u00e7\u00e3o que melhor descreve a a\u00e7\u00e3o sendo realizada.</p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXeU06f00hBUxAfTZgNElPfzN5rWjnPATFG_CoGHBNzLhyhpfzTNehAajKenbFUbr80cyOAUMiwkP4N8OgMiizF8ueWDmOkCyPVEFj1GWssf2otd3AeB69UKiPaPmSZUWFS7qTd2JxzLRL2gwWnX1RZORwMR?key=ai-SMjKRfT0hPDChvXeJmQ\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "ab0383e8-c7e6-4b00-aff1-7ca418a0bd12", "content": "She is playing basketball with her dog.", "image_url": ""}, {"option_id": "41e6bfc1-4741-4547-b4a5-deb56898edd7", "content": "She is riding a bike with her dog.", "image_url": ""}, {"option_id": "4f893f9f-03e2-4233-bb86-11e99b00eae4", "content": "She is giving her dog a bath in the park.", "image_url": ""}, {"option_id": "0864cfa6-f7f0-45ac-a8ec-ba47a232aac9", "content": "She is taking a nap in the park.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

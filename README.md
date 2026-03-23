@@ -1,109 +1,62 @@
 # EngLeap
 
-Plataforma web para estudo de ingles com:
-- biblioteca de materiais (HTML/MP4) por modulo
-- flashcards EN/PT com traducao automatica
-- autenticacao e dados no Supabase
-- painel administrativo para gestao de usuarios
+Aplicacao web de estudos com React + Vite, materiais estaticos em `srs-app/public/materiais` e integracao com Supabase para autenticacao, flashcards e painel administrativo.
 
-## Stack
-
-- React 19 + Vite
-- Tailwind (via CDN no `index.html`)
-- Supabase (Auth, tabela de flashcards e roles)
-- Vercel (deploy)
-
-## Estrutura do projeto
+## Estrutura
 
 ```text
 .
-├─ srs-app/                  # app frontend (workspace principal)
-│  ├─ src/
-│  │  ├─ App.jsx             # portal do aluno (materiais + flashcards)
-│  │  ├─ AdminDashboard.jsx  # painel admin
-│  │  ├─ Login.jsx           # autenticacao
-│  │  ├─ database.json       # indice de materiais
-│  │  └─ supabaseClient.js   # cliente supabase
-│  └─ public/
-├─ materiais/                # arquivos reais de materiais didaticos
-├─ supabase/
-│  └─ functions/manage-users # edge function para CRUD de usuarios
-└─ vercel.json
+|- srs-app/          # app principal publicada na Vercel
+|- supabase/         # edge functions e configuracoes Supabase
+|- package.json      # comandos do workspace
+|- package-lock.json # lockfile usado pela Vercel
+`- vercel.json       # configuracao de build/deploy
 ```
 
-## Requisitos
+## Rodando localmente
 
-- Node.js 20+
-- npm 10+
-- conta/projeto Supabase
-
-## Configuracao local
-
-1. Instalar dependencias:
+1. Instale as dependencias na raiz:
 
 ```bash
 npm install
 ```
 
-2. Criar arquivo `srs-app/.env.local`:
+2. Crie `srs-app/.env.local` com:
 
 ```env
 VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
-VITE_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_PUBLIC
+VITE_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_PUBLICA
 ```
 
-3. Garantir materiais no local esperado pelo Vite:
-
-O `database.json` aponta para caminhos como `/materiais/...`, entao os arquivos precisam estar em `srs-app/public/materiais`.
-
-PowerShell:
-
-```powershell
-New-Item -ItemType Directory -Force -Path .\srs-app\public\materiais | Out-Null
-Copy-Item -Path .\materiais\* -Destination .\srs-app\public\materiais -Recurse -Force
-```
-
-## Rodando o projeto
-
-Na raiz:
+3. Inicie a app:
 
 ```bash
 npm run dev
 ```
 
-Comandos uteis:
+## Build
 
 ```bash
 npm run build
-npm run lint
 ```
 
-## Supabase (resumo)
+O build final fica em `srs-app/dist`.
 
-- Frontend usa `flashcards` para listar/criar/editar/excluir frases.
-- Controle de admin usa `rpc('is_admin')`.
-- Edge Function `manage-users` faz operacoes de usuarios com Service Role Key.
+## Vercel
 
-Para deploy da function, use Supabase CLI no diretorio do projeto:
+O repositório ja esta organizado para deploy pela raiz:
 
-```bash
-supabase functions deploy manage-users
-```
+- `installCommand`: `npm install`
+- `buildCommand`: `npm run build`
+- `outputDirectory`: `srs-app/dist`
 
-## Deploy (Vercel)
+Na Vercel, configure estas variaveis de ambiente:
 
-O arquivo `vercel.json` ja esta configurado para:
-- `rootDirectory: srs-app`
-- `framework: vite`
-- `buildCommand: npm run build`
+- `VITE_SUPABASE_URL`
+- `VITE_SUPABASE_ANON_KEY`
 
-Deploy rapido:
+## GitHub
 
-```bash
-vercel --prod
-```
+O remote esperado para este projeto e:
 
-## Observacoes
-
-- `srs-app/.env.local` esta no `.gitignore` e nao deve ser commitado.
-- Se aparecer erro de pasta ausente em `srs-app/public/materiais`, rode o passo de copia da secao de configuracao local.
+- [https://github.com/gostilima/Englead](https://github.com/gostilima/Englead)

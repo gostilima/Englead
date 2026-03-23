@@ -1,5 +1,5 @@
 {
-  "installCommand": "cd srs-app && npm install",
-  "buildCommand": "cd srs-app && npm run build",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "outputDirectory": "srs-app/dist"
 }

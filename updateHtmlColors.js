@@ -13,7 +13,7 @@ function walkSync(currentDirPath, callback) {
     });
 }
 
-const targetDir = path.join(__dirname, 'materiais');
+const targetDir = path.join(__dirname, 'srs-app', 'public', 'materiais');
 
 walkSync(targetDir, function(filePath) {
     let content = fs.readFileSync(filePath, 'utf8');

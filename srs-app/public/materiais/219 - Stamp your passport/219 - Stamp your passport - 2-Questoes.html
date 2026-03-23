@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "13fc8e9a-fdbe-4367-8414-94a07b4e9063", "assessment_id": "21c3ef0b-9aca-415e-9e1a-ac82705f50d4", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Read the text and choose the sentence that is true:</p><p><br></p><p>Catalina said, \u201cObviously I thought that it was going to be like I knew it, but no, the north is quite different from the south. So that was my first surprise, how different everything was. We don't have that kind of weather. It's rough. I mean, it's amazing but it's really difficult to adapt to the conditions that you have there, to the weather, to the mosquitoes, what you have to do there... You are new so you have to find a house, you have to understand the dynamics. So, it was very different and it was very shocking at first.\u201d</p><p>&nbsp;</p><p><br></p><p><br></p>", "media": null, "options": [{"option_id": "af49cfe2-2e9e-4226-b70a-7f55866d3ca1", "content": "Catalina expected the north to be similar to what she knew", "image_url": ""}, {"option_id": "a890def0-cc3b-4873-a1ec-3e507b690ef2", "content": "Catalina emphasizes that adapting to the north was not difficult for her", "image_url": ""}, {"option_id": "844801bb-e198-4320-ba62-2d8c7e4ad3b7", "content": "Mosquitoes were not a concern for Catalina in the new region", "image_url": ""}, {"option_id": "59ef8688-8a5c-4388-90fa-9f1b7120beff", "content": "Catalina found the conditions in the north challenging to adapt to", "image_url": ""}], "answer": null}, {"question_id": "a32efd38-83ba-41e5-a06d-c99ed795adec", "assessment_id": "21c3ef0b-9aca-415e-9e1a-ac82705f50d4", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Catalina said, \u201cI would say listen to music that makes you feel close to home. That helped me sometimes. Also, try to break that feeling by doing something new and amazing that excites you and takes away that feeling. That's what I did, I was like, \u2018Okay let's go to this place, let's go by boat to this place, let's try this new restaurant\u2019\u201d.</p><p>&nbsp;</p><p>According to Catalina, what did she do to overcome homesickness?</p><p>&nbsp;</p><p><br></p><p><br></p>", "media": null, "options": [{"option_id": "b3f8ac16-38e5-4b80-beb7-12c17a66b512", "content": "Ate familiar meals", "image_url": ""}, {"option_id": "f23753d9-cce0-4695-8e9b-24f01f590642", "content": "Did whatever was necessary to break the feeling of homesickness", "image_url": ""}, {"option_id": "0b1c6f7b-c537-4440-871b-d7300d9f864b", "content": "Avoided any new experiences", "image_url": ""}, {"option_id": "c3fc500d-8057-4b08-ba2a-090ab32a386e", "content": "Listened to music and explored new places", "image_url": ""}], "answer": null}, {"question_id": "365e15bc-a400-43b7-8ab3-af26c7c0fc97", "assessment_id": "21c3ef0b-9aca-415e-9e1a-ac82705f50d4", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>&nbsp;\u201cThere\u2019s one thing in particular that really stuck with me. I hated olives. And in Brazil olives are everything, are everywhere, it\u2019s impressive. And I learned to love them.\u201d By the expression \u201cstuck with me\u201d, Catalina means that:</p><p>&nbsp;</p><p><br></p><p><br></p><p><br></p>", "media": null, "options": [{"option_id": "1eb3a7b9-399d-4c5c-84dd-d6070f36157e", "content": " It made a lasting impression", "image_url": ""}, {"option_id": "fcf5f904-f6e1-4418-8fae-8b66599f747b", "content": "It had a low impact on her", "image_url": ""}, {"option_id": "f8d81313-261f-451f-a5ae-33e94fdac1c8", "content": "It reassured what she thought", "image_url": ""}, {"option_id": "63f78765-c303-42bc-a6b0-cfbe5bed89fa", "content": "It lasted for good", "image_url": ""}], "answer": null}, {"question_id": "33850380-c20c-4039-9ac0-bbc7f4bacf0a", "assessment_id": "21c3ef0b-9aca-415e-9e1a-ac82705f50d4", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Catalina explains that Colombia, Venezuela and Ecuador have the same colors in their flags because they were one country in the past. What is the element that differentiates the Colombian flag?</p><p>&nbsp;</p><p><br></p>", "media": null, "options": [{"option_id": "f9e83254-7354-4bff-ad3a-a9e6892737aa", "content": "The distribution of the colors", "image_url": ""}, {"option_id": "22882462-5b4e-4281-bd10-68bfcf7e769e", "content": "The national emblem in the middle", "image_url": ""}, {"option_id": "99b0ed40-3e0e-4bc2-b088-a03e40557127", "content": "The shade of colors", "image_url": ""}, {"option_id": "4170968e-9a59-4467-8e9c-790bd1905dd7", "content": "The tricolor bands", "image_url": ""}], "answer": null}, {"question_id": "71cfb793-02db-436f-b241-23655fe28842", "assessment_id": "21c3ef0b-9aca-415e-9e1a-ac82705f50d4", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>\"It was the first time that I got to try my English.\" This expression means that the person\u2026</p><p>&nbsp;</p><p><br></p>", "media": null, "options": [{"option_id": "308b6724-da0b-403b-a09a-37ef630059bc", "content": "had the chance to meet English speakers", "image_url": ""}, {"option_id": "aa15810f-d19d-4d8b-a501-4d058c2cbca0", "content": "was forced to speak English", "image_url": ""}, {"option_id": "dfec47d5-b5c8-4dbb-924b-928e323233da", "content": "used English in a well-known situation", "image_url": ""}, {"option_id": "0186d17a-c3a3-41b5-949a-22f6086b4d24", "content": "had an opportunity to practice their English language skills", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

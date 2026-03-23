@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "0c9d3308-0214-4a66-954a-ae2b6383897c", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e escolha a op\u00e7\u00e3o que completa corretamente a seguinte afirma\u00e7\u00e3o:</p><p><br /></p><p><em>\"After reaching a significant milestone of followers, the influencer exclaimed: ______\"</em></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/COMPREHENSION_PRACTICE_U05_After reaching a significant.mp3"}, "options": [{"option_id": "76ac245c-7964-4f04-b932-85c8e6dda746", "content": "\"Now I can engage with a larger audience!\"", "image_url": ""}, {"option_id": "88afde18-2a81-4ed6-b439-274c575be8a1", "content": " \"I need to update my profile picture.\"", "image_url": ""}, {"option_id": "d55a9c69-ac26-489f-ae6d-13b642d82cda", "content": "\"How about a live session tomorrow?\"", "image_url": ""}, {"option_id": "658781e8-153f-43f8-835d-a50fdf0ac50e", "content": "\"Let's celebrate this offline.\"", "image_url": ""}], "answer": null}, {"question_id": "5b0bfe33-65a4-4177-8fcc-0408d6287bcc", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio. Quais palavras possuem conex\u00e3o de sons?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_UN05_I usually watch.mp3"}, "options": [{"option_id": "ca753672-80fe-4721-8016-7b3efde500fa", "content": " \"watch_action\" (o som de 't' se conecta com 'a' em \"action\")", "image_url": ""}, {"option_id": "8dd47a79-c57c-40e1-9ea1-ec88de4155c4", "content": "\"movies_because\" (o som de 's' se conecta com 'b' em \"because\")", "image_url": ""}, {"option_id": "9500e71e-9dde-4adb-abc3-6ca172211ad4", "content": " \"they're_exciting\" (o som de 'r' se conecta com 'e' em \"exciting\")", "image_url": ""}, {"option_id": "2b822f7b-3ed8-4661-8890-00083e44a62e", "content": "\"drama_when\" (o som de 'a' se conecta com 'w' em \"when\")", "image_url": ""}], "answer": null}, {"question_id": "59815607-3855-44e0-8a8a-d3bcabe6e208", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como voc\u00ea diria <strong>\"Ele quer ser elogiado por fazer o m\u00ednimo necess\u00e1rio\"</strong> em ingl\u00eas?</p>", "media": null, "options": [{"option_id": "d2b757d2-8338-4813-9dc5-568128256428", "content": "He likes to be praised for doing the minimum.", "image_url": ""}, {"option_id": "910594ef-f112-4d4b-918c-b9c79ed6a859", "content": "He wants to be praised for doing the bare minimum.", "image_url": ""}, {"option_id": "fbcaba1a-079b-4f26-98ff-172d07b224ed", "content": "He enjoys to be praised for doing the bare minimum.", "image_url": ""}, {"option_id": "3f38b7f7-7b8f-4d81-9af5-80a8c886c3e3", "content": "He needs to be praised for doing just minimum.", "image_url": ""}], "answer": null}, {"question_id": "5534c16d-ae64-4cda-9d61-1fd7da78dd28", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio. Por que o colega pede que o supervisor repita a informa\u00e7\u00e3o?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/BORN_IN_THE_USA_UN05 I'm sory I didn't get that.mp3"}, "options": [{"option_id": "801ba956-b850-4f2f-b640-871f3ae35e4f", "content": "Because the audio was not clear.", "image_url": ""}, {"option_id": "c98c6114-48f9-414d-8243-910ef62b0bb4", "content": "Because he wants to confirm the project deadlines.", "image_url": ""}, {"option_id": "54d90244-0cfe-4208-980c-2e7ca05ad28e", "content": "Because he didn't hear the supervisor.", "image_url": ""}, {"option_id": "bff88a31-cef8-400c-b82a-a1d21e100b5d", "content": "Because he wants to know the project's budget.", "image_url": ""}], "answer": null}, {"question_id": "40856655-a95c-4d61-a9e7-59024951b0d6", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Observe a imagem. Qual pe\u00e7a de roupa \u00e9 essencial para essa situa\u00e7\u00e3o?</p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXcPVtZnX9ZbYavOIfSAsgFuf450U5FJoWLI_7NcDmrEYNejezVmqbPI2SWnqwelBeB2e0UkjLnlBF1RRi8iH0jUffeAdLIT_A5ImZupOeUFOVC4e4wxHXCibeRxhlMJhQKGiOvnwOLbuwcYmIT_vQI_bYLA?key=uJJydz1AeXt0UWQyAvuXRA\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "732e12de-ae07-4448-8e58-300e5fc4f2c0", "content": "Swimsuit", "image_url": ""}, {"option_id": "05af5ddb-f98d-4967-b3d6-5ed53a32d001", "content": "Sandals", "image_url": ""}, {"option_id": "16b9a1bf-7066-4c92-ad52-8df28976671e", "content": "Overcoat", "image_url": ""}, {"option_id": "7d67699c-d653-47db-ab5b-4f6ddb0c61f9", "content": "Shorts", "image_url": ""}], "answer": null}, {"question_id": "e276fe2c-e7b6-47cf-9ab0-51d72a487615", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Leia a frase e escolha a op\u00e7\u00e3o que melhor explica o uso da express\u00e3o 'bummer' no contexto: </p><p><br /></p><p><em>\"These days, many people think reality is a bummer and try to escape into the world of virtual adventures.\"</em></p><p><br /></p>", "media": null, "options": [{"option_id": "b88ed43b-4145-489e-9c10-167e664c9580", "content": "'Bummer' refere-se a uma situa\u00e7\u00e3o divertida e alegre na realidade.", "image_url": ""}, {"option_id": "81df2b21-aa37-4847-83c4-d732045d1c23", "content": "'Bummer' indica que a realidade \u00e9 decepcionante ou desanimadora.", "image_url": ""}, {"option_id": "5959e459-a0e5-4357-bc08-972c9229870a", "content": " 'Bummer' sugere que a realidade \u00e9 uma fuga emocionante.", "image_url": ""}, {"option_id": "b1ba37d6-a6f6-406e-96a8-cddac14b1045", "content": " 'Bummer' descreve uma realidade cheia de oportunidades e sucesso.", "image_url": ""}], "answer": null}, {"question_id": "939f53ae-937c-40ba-ba0a-55cbdec33648", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio e selecione a pergunta que foi feita:</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_UN06_How do you like the movie.mp3"}, "options": [{"option_id": "8234c1a9-c185-4cc7-ba69-a90612e099c1", "content": "How did you make the movie last night?", "image_url": ""}, {"option_id": "a4190090-03e8-4cf4-8f05-130ba5f4ddf7", "content": "What did you do at the cinema last night?", "image_url": ""}, {"option_id": "2aad8556-3f3a-4e7f-96d6-533b983731a1", "content": "How did you like the movie last night?", "image_url": ""}, {"option_id": "52327b24-d624-42df-bd23-77cd79f36e76", "content": "Where did you watch the movie last night?", "image_url": ""}], "answer": null}, {"question_id": "e071088e-8865-4e70-8107-cba49a503ef9", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Selecione a alternativa que corretamente completa a frase:</p><p><br /></p><p><em>\"____ sister always forgets to lock ____ door when she leaves home, and it worries ____ parents.\"</em></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "ba7593c8-d811-459e-92f7-542ef52f875f", "content": "My / her / their", "image_url": ""}, {"option_id": "a5a66443-9423-4174-8a77-84baf2838e4e", "content": "Her / his / our", "image_url": ""}, {"option_id": "fc26596e-9b9a-4750-962d-234ba896e174", "content": "Their / her / my", "image_url": ""}, {"option_id": "3a47d277-f787-486d-9dfc-52fa4ac2390a", "content": "His / their / her", "image_url": ""}], "answer": null}, {"question_id": "d1de0d0b-f169-4abd-ba97-a5a3e9b0dbc9", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como perguntar sobre as prefer\u00eancias musicais de algu\u00e9m em ingl\u00eas?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "a6f16475-7391-40ea-8e31-6780804477be", "content": "What kind of music do you like?", "image_url": ""}, {"option_id": "26dbf672-6858-441e-a4a8-27c3dce7eb2a", "content": "What is your favorite music?", "image_url": ""}, {"option_id": "41d951bc-1f6c-4389-89a0-dded289ebbc6", "content": "Do you like music?", "image_url": ""}, {"option_id": "cbce4caf-bb59-4aa5-a3eb-ef8e53e47be0", "content": "Is music good?", "image_url": ""}], "answer": null}, {"question_id": "8ac65046-9444-4282-9bed-a34fe92f3138", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Qual das frases descreve corretamente uma situa\u00e7\u00e3o de compra de roupas?</p><p><br /></p>", "media": null, "options": [{"option_id": "9d0c2b8a-965e-4283-bd89-f7c18e5b16a8", "content": "My brother always wears a blue jacket in winter.", "image_url": ""}, {"option_id": "f301d949-8d2e-4edf-8bd3-9375abfbeaf0", "content": "We are going shopping together, I\u2019ll buy a pink shirt.", "image_url": ""}, {"option_id": "f6f63954-ce57-4fa8-960a-7d4bc296ef05", "content": "I like how it fits me.", "image_url": ""}, {"option_id": "eb9db339-188d-4cc0-8b27-b766a9f1598f", "content": "My sister prefers to buy fruits at the street market. ", "image_url": ""}], "answer": null}, {"question_id": "4283d807-bb0d-4395-a35c-593794efd1f3", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 11, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Escute o \u00e1udio. De acordo com o relato, por que as pessoas fazem perguntas inesperadas ao falante?</p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/COMPREHENSION_PRACTICE_U07_People often get confused.mp3"}, "options": [{"option_id": "822f15f6-3ac1-474d-a24f-ab6bea5416e7", "content": "Because of stereotypes about his job.", "image_url": ""}, {"option_id": "334f6f39-7124-4145-b6cd-1b53c91a98e6", "content": "Because of stereotypes about his accent.", "image_url": ""}, {"option_id": "a3bc4261-c2c9-442d-bee3-6ddfaf988680", "content": "Because of stereotypes about his age. ", "image_url": ""}, {"option_id": "5f0a1ee1-fdea-4f46-85e1-4d813df8f7b7", "content": "Because of stereotypes about his education.", "image_url": ""}], "answer": null}, {"question_id": "9b321334-7cd7-4321-968b-be26de82b1ad", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 12, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio. O que o falante est\u00e1 propondo?</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_UN07_ Come on! It's gonna be.mp3"}, "options": [{"option_id": "6ed8fbdd-2d3a-4a2d-9088-194d7f2d4bd5", "content": "A trip to a beach the next day.", "image_url": ""}, {"option_id": "cd99fb40-8927-46ed-bff9-97372293e04e", "content": "A night out in the city.", "image_url": ""}, {"option_id": "b5e211d9-9d7e-459e-b91a-a245d7d20432", "content": "A study session for an upcoming test.", "image_url": ""}, {"option_id": "70225069-426f-4ede-b02b-fc30001895f6", "content": "A quick coffee meet-up.", "image_url": ""}], "answer": null}, {"question_id": "845d0f7e-f440-4eda-8a9d-669a694b4741", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 13, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Analise as frases do texto. Qual op\u00e7\u00e3o descreve corretamente o uso dos modais para indicar permiss\u00e3o/possibilidade e seus n\u00edveis de formalidade?</p><p><br /></p><p>It was a busy day at the office. Sarah\u2019s phone battery was low, so she turned to her colleague and asked, <em>\u201cCan I borrow your charger?\u201d</em> He nodded and handed it to her.</p><p>Later, after rushing to finish a report, Sarah\u2019s manager looked at her and said, <em>\u201cYou may leave early after you finish the report.\u201d</em> Relieved, she worked even faster.</p><p>Before heading home, Sarah realized she was really thirsty. She went to the office kitchen and politely asked, <em>\u201cCould I have a glass of water, please?\u201d</em> A coworker smiled and poured her one.</p><p><br /></p>", "media": null, "options": [{"option_id": "f52d4ab4-7ecb-4573-a5dc-a053b486bf32", "content": "\"Can\" \u00e9 usado para pedidos casuais, \"may\" para conceder permiss\u00e3o formal e \"could\" para perguntas educadas.", "image_url": ""}, {"option_id": "739fb48b-2a2a-49ec-8fd0-9256034425f8", "content": "Todos os tr\u00eas modais s\u00e3o usados de forma intercambi\u00e1vel para pedidos casuais.", "image_url": ""}, {"option_id": "f9408014-60d1-4e68-8cc6-888382e15912", "content": "\"Can\" expressa habilidade, \"may\" solicita permiss\u00e3o para a\u00e7\u00f5es futuras e \"could\" indica habilidade passada apenas.", "image_url": ""}, {"option_id": "e48f39c9-b719-4ea2-9684-9a58002ee16b", "content": "\"Can\" \u00e9 apenas para habilidades presentes, \"may\" para possibilidades formais futuras e \"could\" para fazer ofertas.", "image_url": ""}], "answer": null}, {"question_id": "12bff487-30a7-4741-9740-7d2e90c0c42f", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 14, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio. O que est\u00e1 sendo proposto pelo falante?</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/BORN_IN_THE_USA_UN07_ Hey, we're having a little.mp3"}, "options": [{"option_id": "88ef9051-d45f-4481-91eb-fef0c5c8a12b", "content": " A casual meet-up for coffee.", "image_url": ""}, {"option_id": "4f9cb4b0-f437-45a4-b921-c780b8f3b5ec", "content": "A dinner party at the speaker\u2019s place.", "image_url": ""}, {"option_id": "c437ffcc-7c0f-44aa-9587-eda9d0f80dae", "content": "A quick lunch at a new restaurant in town.", "image_url": ""}, {"option_id": "b279e8d1-5588-4bb3-8033-d98b62fb1878", "content": "An official meeting.", "image_url": ""}], "answer": null}, {"question_id": "7649788c-1c4e-4c89-9c83-4c4290e3d6cf", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 15, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Observe a imagem abaixo e escolha a alternativa correta de acordo com ela:</p><p><br /></p><img src=\"https://lh7-rt.googleusercontent.com/docsz/AD_4nXcHJmJWq_lXcZ0j-LwL92YnY_qxASLW0fNq7XI_2wI9Zm8lOjJAf46rwje92286ngZ8zArDVkDUmBkHEW1ZRrHqKIIC1yMC1hcM3gNri999FKlI5S-4tWHRQ8QEN1yGJulw22X6u2hmvIW8E-Jld0TkX2A?key=uJJydz1AeXt0UWQyAvuXRA\" height=\"500\" width=\"500\" /><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "09edfd19-f2ac-4509-ad7a-27eac501edaf", "content": "He lives in the United States.", "image_url": ""}, {"option_id": "7a877396-ee74-4146-97cb-0400d24c2328", "content": "He lives in Canada.", "image_url": ""}, {"option_id": "290d7bb1-74db-4873-b8c8-1e2fd305e9dc", "content": "He lives in Germany.", "image_url": ""}, {"option_id": "4e564f8d-2fc9-43a8-8da2-024df0733c5c", "content": "He lives in Japan.", "image_url": ""}], "answer": null}, {"question_id": "ed28a25b-ec25-4637-b8bc-4b71a9619ce0", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 16, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Uma pessoa mudou seu ambiente de trabalho de um escrit\u00f3rio tradicional para um local ao ar livre. </p><p><br /></p><p>Qual frase em ingl\u00eas resume melhor essa situa\u00e7\u00e3o?</p>", "media": null, "options": [{"option_id": "aacb2db9-5205-4ff0-90d6-2daba382a9ba", "content": "He continued working in an office but with a view of a beautiful lake.", "image_url": ""}, {"option_id": "22875b99-6591-43fe-9442-6f6ccaeca17b", "content": "He updated his office for a field job.", "image_url": ""}, {"option_id": "d4c68b48-748b-4cc4-bfba-f28bd4a8187d", "content": "He moved his office desk to a new building.", "image_url": ""}, {"option_id": "e780bce6-a7f7-4ca6-b046-e9186eb547ca", "content": "He moved from managing spreadsheets to managing landscapes.", "image_url": ""}], "answer": null}, {"question_id": "80f13944-c0e5-4208-95db-24da1ec195c9", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 17, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio. Complete as lacunas com os verbos apresentados:</p><p><br /></p><p><em>'We ___ the stars, we ___ until dawn, and we ____\u00a0those gone too soon.'</em></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/MIC_UP_UN08_We watched the stars.mp3"}, "options": [{"option_id": "c1f2b75f-0b25-4639-930a-d9cae613eb78", "content": "watched, danced, missed", "image_url": ""}, {"option_id": "714d6af0-12d3-4e6f-a0b4-36f50431a2a0", "content": "watched, danced, gone", "image_url": ""}, {"option_id": "70d29be7-da81-41c2-ba13-73fbab162049", "content": "watched, changed, missed", "image_url": ""}, {"option_id": "dfb0d040-13c6-4a39-a3d8-a40f63eff98c", "content": "waited, played, missed", "image_url": ""}], "answer": null}, {"question_id": "13a828c7-ad95-4627-a256-ecdbdb1fe956", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 18, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Como voc\u00ea perguntaria de forma educada se algu\u00e9m completou uma tarefa ontem?</p><p><br /></p>", "media": null, "options": [{"option_id": "a13ca319-9d8b-44dd-9658-329ea49e8d35", "content": "Did you finish the report yesterday?", "image_url": ""}, {"option_id": "d7c08ec6-8abe-4906-a3a2-e5269e6522de", "content": "You finished the report yesterday?", "image_url": ""}, {"option_id": "9428532a-77ed-48f0-aa38-e96ba71a1ea5", "content": "You finished the report yesterday, didn\u2019t you?", "image_url": ""}, {"option_id": "48c4b157-4f68-48b7-9f9b-6ecd2a3e6a45", "content": "Don\u2019t tell me you finished the report yesterday?", "image_url": ""}], "answer": null}, {"question_id": "16e38e3c-84d4-45f0-a2b1-04864b84069b", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 19, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Ou\u00e7a o \u00e1udio. Qual \u00e9 o foco principal da conversa entre os colegas?</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/BORN_IN_THE_USA_UN08-Hey, that was a great presentation!.mp3"}, "options": [{"option_id": "c5f03063-1ad1-412f-9a84-ffd9e30a4851", "content": "Giving feedback on a presentation.", "image_url": ""}, {"option_id": "929cf0e9-ecbf-4749-a420-fac8a91fc642", "content": "Discussing weekend plans.", "image_url": ""}, {"option_id": "fbedcab8-6de7-4ff9-b890-e764e3dde829", "content": "Planning another presentation at work.", "image_url": ""}, {"option_id": "a948d7a4-385b-43e8-868f-992564cf3d2a", "content": "Reviewing office policies.", "image_url": ""}], "answer": null}, {"question_id": "d506c573-bb9e-47cf-9fb5-fdb0703167e4", "assessment_id": "050c96da-6e39-497e-b73a-3df290e16e70", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 20, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>Complete o di\u00e1logo:</p><p><br /></p><p><em>A: Do you have any new hobbies?</em></p><p><em>B:__________________________</em></p><p><br /></p>", "media": null, "options": [{"option_id": "edf4e342-de4f-4b34-80b7-60d09da517b3", "content": "He tries to play the drums, but doesn\u2019t enjoy it.", "image_url": ""}, {"option_id": "69f804e1-eb37-48c2-bef7-c4118c75d127", "content": "I have been knitting a scarf for my mother.", "image_url": ""}, {"option_id": "d8b560cd-eab4-40c3-bef7-e01ad03aae30", "content": "We go to the gym to do weight-lifting every weekend.", "image_url": ""}, {"option_id": "8bb6d0fd-d795-4935-891a-38496472a595", "content": "She writes a diary about her experiences in pottery class.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>

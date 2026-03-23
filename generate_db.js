@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const MATERIAIS_DIR = 'c:\\Users\\lucas\\Music\\Fluency + MemHack\\materiais';
-const OUTPUT_FILE = 'c:\\Users\\lucas\\Music\\Fluency + MemHack\\srs-app\\src\\database.json';
+const MATERIAIS_DIR = path.join(__dirname, 'srs-app', 'public', 'materiais');
+const OUTPUT_FILE = path.join(__dirname, 'srs-app', 'src', 'database.json');
 
 try {
   const folders = fs.readdirSync(MATERIAIS_DIR, { withFileTypes: true })

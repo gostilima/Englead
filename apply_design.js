@@ -210,7 +210,7 @@ function walk(dir) {
     return results;
 }
 
-const files = walk('materiais');
+const files = walk('srs-app/public/materiais');
 
 files.forEach(file => {
     let content = fs.readFileSync(file, 'utf8');

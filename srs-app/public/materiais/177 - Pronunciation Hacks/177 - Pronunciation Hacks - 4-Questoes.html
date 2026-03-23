@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema de Quiz Simples</title>
+    <style>
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #042A35;
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        background-image: radial-gradient(circle at 50% 0%, rgba(255, 140, 104, 0.1) 0%, transparent 50%);
+        overflow-x: hidden;
+      }
+
+      /* Aesthetics from ORION */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      }
+
+      h1 {
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 2.2rem;
+        margin-bottom: 2rem;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+        color: #fff;
+      }
+
+      .question-container {
+        background-color: rgba(255, 255, 255, 0.02);
+        padding: 24px;
+        margin-bottom: 24px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(16px);
+        transition: transform 0.5s ease;
+      }
+
+      .question-header {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: #FF8C68;
+        margin-bottom: 25px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+      }
+
+      .question-description p {
+        margin: 5px 0;
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: rgba(255,255,255,0.8);
+      }
+
+      .question-image,
+      .question-audio {
+        margin: 20px 0;
+        text-align: center;
+      }
+
+      .question-image img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+
+      .options-list {
+        list-style: none;
+        padding: 0;
+        margin-top: 25px;
+      }
+
+      .option-item {
+        margin: 15px 0;
+        padding: 20px 25px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        color: rgba(255,255,255,0.9);
+        display: flex;
+        align-items: center;
+      }
+
+      .option-item:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.2);
+        transform: translateX(8px);
+      }
+
+      .option-item input[type='radio'] {
+        margin-right: 20px;
+        accent-color: #FF8C68;
+        transform: scale(1.4);
+        cursor: pointer;
+      }
+
+      .correct-answer {
+        background-color: rgba(255, 140, 104, 0.15) !important;
+        border-color: #FF8C68 !important;
+        color: #FF8C68 !important;
+        transform: scale(1.02);
+      }
+
+      .incorrect-selected {
+        background-color: rgba(239, 68, 68, 0.15) !important;
+        border-color: #ef4444 !important;
+        color: #ef4444 !important;
+      }
+
+      .correct-not-selected {
+        background-color: rgba(245, 158, 11, 0.15) !important;
+        border-color: #f59e0b !important;
+        color: #f59e0b !important;
+      }
+
+      .submit-button {
+        display: block;
+        width: 100%;
+        max-width: 400px;
+        margin: 30px auto 0;
+        padding: 16px;
+        background-color: #fff;
+        color: #000;
+        border: none;
+        border-radius: 9999px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.25em;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        box-shadow: 0 10px 20px rgba(255,255,255,0.1);
+      }
+
+      .submit-button:hover {
+        background-color: #e5e5e5;
+        transform: scale(1.05);
+        box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+      }
+
+      #results {
+        margin: 40px auto;
+        max-width: 600px;
+        padding: 30px;
+        background-color: rgba(255, 140, 104, 0.1);
+        border: 1px solid rgba(255, 140, 104, 0.3);
+        border-radius: 30px;
+        font-family: 'Bricolage Grotesque', sans-serif;
+        font-size: 1.8em;
+        font-weight: 500;
+        text-align: center;
+        color: #FF8C68;
+        display: none;
+        animation: slideUpFade 0.5s ease-out forwards;
+      }
+
+      @keyframes slideUpFade {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #042A35; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+      @media (max-width: 768px) {
+        body { padding: 15px; }
+        h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+        .question-container { padding: 16px; margin-bottom: 16px; border-radius: 20px; }
+        .option-item { padding: 12px 16px; font-size: 0.95rem; }
+        .submit-button { margin-top: 20px; font-size: 1.1em; padding: 15px; }
+        #results { font-size: 1.4rem; padding: 20px; }
+      }
+
+    </style>
+  
+    <!-- ORION Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  </head>
+  <body>
+    <h1>🚀 Desafio do Quiz</h1>
+
+    <form id="quiz-form"></form>
+
+    <button class="submit-button" onclick="validateQuiz()">Validar Respostas</button>
+
+    <div id="results"></div>
+
+    <script>
+      // Estrutura de dados das questões fornecida no prompt
+      const quizData = [{"question_id": "628c6f21-6588-4f3a-a7da-29a5b5796767", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 1, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the correct option.:</p><p><br /></p><ol><li><span></span><em>The law ______ application dictates the rules on alimony that varies from state to state.</em></li><li><span></span><em>The caterer, to _____ we entrusted the arrangements for the bridal shower, did an excellent job.</em></li></ol><p><br /></p>", "media": null, "options": [{"option_id": "4e7f9a95-51b1-4aff-84cb-4332fee8f377", "content": "whose / whom.", "image_url": ""}, {"option_id": "a30dfb1d-4134-4461-9651-be685a170222", "content": "whom / who.", "image_url": ""}, {"option_id": "051cc810-f54c-4fdc-b1d8-ce65fd27952f", "content": "who / where.", "image_url": ""}, {"option_id": "a9288540-9e8e-4c38-842b-7c8d6dff1325", "content": "that /which", "image_url": ""}], "answer": null}, {"question_id": "3db1aaf0-7f7a-442e-a4f7-8c43203e0dab", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 2, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to the dialogue.</p><p><br /></p><p>Based on the conversation between Mark and John, evaluate the following statements:</p><p><br /></p><p>I. Mark accuses John of not following the rules of their game.</p><p>II. John suggests having a replay of the game because Mark keeps winning.</p><p>III. Mark agrees to stop calling John jealous and proposes a rematch.</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/O3-1_ex2.mp3"}, "options": [{"option_id": "ab2d80f1-c5d3-4df0-9eb0-0aecc7e15571", "content": "I. True; II. True; III. True", "image_url": ""}, {"option_id": "699b1bdf-66b8-4777-bc27-4574ff5cfdf2", "content": "I. False; II. True; III. True", "image_url": ""}, {"option_id": "7771473c-e1bf-42c8-90a6-347becbf0999", "content": "I. True; II. True; III. False", "image_url": ""}, {"option_id": "4c84c958-c9cb-44b2-959f-a339dc4cb58d", "content": "I. False; II. False; III. True", "image_url": ""}], "answer": null}, {"question_id": "3bed6a5a-9f68-4776-9352-0a0c21c75a82", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 3, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p>She decided to explore various ways of making extra money, reflecting on her skills and interests to get involved in a side hustle that suited her best.</p><p><br /></p><p>How did she decide to explore ways to earn more money?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "7784b68f-9634-411c-b50f-036b79c9c087", "content": "She randomly tried different jobs without thinking about what she liked.", "image_url": ""}, {"option_id": "d5803dab-c1aa-4fd1-9665-87998b926229", "content": "She looked into ways to make extra cash, thinking about what she was good at.\u00a0", "image_url": ""}, {"option_id": "2a25bed6-4764-4262-b7fe-be416dda1b09", "content": "She hoped to get lucky and find a side job without putting in much effort.", "image_url": ""}, {"option_id": "3068f189-b6b6-4079-9d01-dfa0ca876537", "content": "She asked friends for advice but didn't think about what she was good at or liked.", "image_url": ""}], "answer": null}, {"question_id": "c12d73e8-bb9d-41c7-a5cc-cd05aa8b03ed", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 4, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Choose the correct option according to audio. </p><p><br /></p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SMALL_TALK_09_Well, when I.mp3"}, "options": [{"option_id": "64e33614-41df-452a-b092-f8f62dbcd37b", "content": "People used filler words frequently, and the speaker adopted this habit.", "image_url": ""}, {"option_id": "1551b6d8-b4c2-41f3-b192-e4f90ad78afa", "content": "People spoke very formally, which influenced the speaker's language use.", "image_url": ""}, {"option_id": "738f6a49-eace-4718-9825-7b53a04f158a", "content": "People had a distinct accent, which the speaker tried to imitate.", "image_url": ""}, {"option_id": "e2de6576-11c9-4d98-904e-3b82b97684e0", "content": "People rarely used filler words, which surprised the speaker.", "image_url": ""}], "answer": null}, {"question_id": "0dd2b9d4-4442-4760-8ad2-5363dcd6c17e", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 5, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Have you ever dreamed of ______ dogs as a kind of job? If yes, how about ______it for the first time?</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "e02c0fc4-3094-4d34-8675-74fffbc9dad2", "content": "walking / trying.", "image_url": ""}, {"option_id": "a9bd59cd-6742-4d8d-9cee-5052829b64fb", "content": "walk / try.", "image_url": ""}, {"option_id": "bcfa77d7-b6cc-4dd0-9641-1dce9689ea65", "content": "to walk / trying.", "image_url": ""}, {"option_id": "cba46bff-7941-4ea5-aa1f-60bd02c64667", "content": "walking / to try.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "416ea51a-2a31-4fab-a7ad-24e96439379b", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 6, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the odd one out.</p><p><br /></p><p><em>I couldn't wait to start my enrollment process, get into a nice college in the U.S., and <u>___________.</u></em></p><p><br /></p>", "media": null, "options": [{"option_id": "46c7f13f-7e20-4fef-93d3-1d8ed687e442", "content": "be part of a Greek life!", "image_url": ""}, {"option_id": "40bc2037-6c27-4fe5-a0c9-64d4a08a88bb", "content": "pursue my academic goals.\u00a0", "image_url": ""}, {"option_id": "30b7faac-21e5-4a00-804a-2e7dcd4ff9d1", "content": "participate in campus clubs.", "image_url": ""}, {"option_id": "50034c31-c316-4706-b883-47da45f99b9f", "content": "join a fraternity or sorority.", "image_url": ""}], "answer": null}, {"question_id": "9bcb855c-60e2-41b5-b716-d0065999de01", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 7, "skill_id": "c8bc74a6-5db5-4c7f-9083-c6d834947486", "description": "<p><strong><em>Phill: </em></strong><em>By the end of October, I'll have completed my citizenship application, so I'll be able to vote in the elections in December.</em></p><p><strong><em>Jake</em></strong><em>: Really? I'll still be serving in the military until the end of the following year, but by then, I'll have finished my term and gained my voting rights too.</em></p><p><strong><em>Phill: </em></strong><em>That's great! By the time you finish your service, I'll have been exercising my right to vote for a while.</em></p><p><br /></p><p>Choose the statement that accurately reflects the time and situation described:</p><p><br /></p>", "media": null, "options": [{"option_id": "4dc65351-4ce2-45ef-917f-35d709d453ec", "content": "By the end of November, Phill will complete his citizenship application, and by December, Jake will have completed his term in the military.", "image_url": ""}, {"option_id": "f96b8c75-94ba-47bb-9e3e-6053397a7d54", "content": "By the end of October, Phill will have completed his citizenship application, and by December, Jake will still be serving in the military.", "image_url": ""}, {"option_id": "58c3d84c-df35-4453-b43a-6090aed69784", "content": "By December, Phill will have finished his citizenship application, and by the end of the first semester, both Phill and Jake will have gained their voting rights.", "image_url": ""}, {"option_id": "63cb28f3-25d9-4980-93cd-aff5ef1d3cd0", "content": "By the end of October, Phill will be completing his citizenship application, and by December, Jake will have just started serving in the military.", "image_url": ""}], "answer": null}, {"question_id": "e96e3a38-2db0-4bb2-8408-923c354abbc5", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 8, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. Choose the most suitable reply in this case.</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SHADOWING_10_I've told you, why can't you.mp3"}, "options": [{"option_id": "357e1d23-6ac8-4253-a709-a05fd13adc94", "content": "I don\u2019t get why you think I believe you.\u00a0", "image_url": ""}, {"option_id": "9501b593-fcba-4a8a-9732-d7195edcfc05", "content": "I didn\u2019t hear what you said, but I trust you.\u00a0", "image_url": ""}, {"option_id": "3fb42064-849d-4363-950b-effa6f7f37d2", "content": "I'm sorry, I always believe in you.\u00a0", "image_url": ""}, {"option_id": "42ad6e23-b4e3-4a8c-9fda-fa6a9af3c047", "content": "I just need more explanation, that\u2019s all.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "8972e5da-a819-4887-a94c-0a1e8688f753", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 9, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Choose the most suitable alternative.</p><p><br /></p><p><em>She was very __________ to his needs and offered to __________ him out of the difficult situation.</em></p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "2f02fb8b-549f-4cfa-9e26-c79e39b8a86f", "content": "sensitive/ push.", "image_url": ""}, {"option_id": "8cf81ba7-1c5d-4f8c-978b-09d64c901293", "content": "sensible / pull.", "image_url": ""}, {"option_id": "6544df17-5767-45f0-bd1e-71f61600e475", "content": "sensitive/pull.", "image_url": ""}, {"option_id": "a89b56ac-bcc3-493d-a944-9c3f4c543223", "content": "sensible/push.", "image_url": ""}], "answer": null}, {"question_id": "868a44ac-af2b-44df-a048-c902cfbd655e", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 10, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>I won't be watching the match with you because you always mock my team simply because yours consistently _______ ours.</p><p><br /></p>", "media": null, "options": [{"option_id": "568668ce-9ad0-486d-b98a-80ead0f335f5", "content": "hit", "image_url": ""}, {"option_id": "68b6108f-5d96-47ab-84cb-0ab3fe2dd4c8", "content": "strike", "image_url": ""}, {"option_id": "1a6f5e6a-1443-4088-a8be-af6649f2c8b5", "content": "beat", "image_url": ""}, {"option_id": "eac3f132-1d8a-4b70-9817-7bf02633b7c6", "content": "crush\u00a0", "image_url": ""}], "answer": null}, {"question_id": "72f55ae3-8a81-4b2e-9166-eefe3cc32f17", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 11, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>By this time next year, she will have _____ numerous awards and _____ recognition for her outstanding achievements.</p><p><br /></p>", "media": null, "options": [{"option_id": "c9e1e051-e356-4665-bfdc-0b167587ad8b", "content": "earn/win.", "image_url": ""}, {"option_id": "3a5c5919-cbe7-4898-912d-f8755ef63212", "content": "winning/earned.", "image_url": ""}, {"option_id": "6e221290-a3cb-4f78-8fa6-b7ff9ec3acac", "content": "earn/ won.", "image_url": ""}, {"option_id": "1d875cfe-815f-4d15-bf9a-71b7fd85b6ab", "content": "won/earned.", "image_url": ""}], "answer": null}, {"question_id": "2ad158a2-62ae-46f7-b100-4922648365ae", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 12, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>Daniel: Depending on the time you take the subway In S\u00e3o Paulo, things can get really sketchy. Does it happen in your city as well? </p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "e68cecd7-63e3-491f-9b1b-efb3d93fc3f9", "content": "Don\u2019t talk about it. After 10 p.m. around here is packed.\u00a0", "image_url": ""}, {"option_id": "3b179623-6e06-41ea-95cf-1b71e6681506", "content": " Really? I thought only here in NY we had safe subways.\u00a0", "image_url": ""}, {"option_id": "0e45c3df-5ea8-4a5f-ac25-9c6f69df2dd0", "content": "Oh yeah, we have a bunch of unsafe places around here.\u00a0", "image_url": ""}, {"option_id": "64b710db-9c67-45f2-b1cf-6417512cc832", "content": " It\u2019s similar! The subways here are as reliable as in there!\u00a0", "image_url": ""}], "answer": null}, {"question_id": "69f7a418-baff-46bb-ba77-800d99514da6", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 13, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>My friend enjoyed driving downtown, _______ the crowded streets. She found it interesting to drive on the left side in a right-hand vehicle. She also saw many motorbikes weaving through traffic, even though it was chaotic.</p><p><br /></p>", "media": null, "options": [{"option_id": "a1bfc36c-06e0-4bee-9a1e-bf0ef474de10", "content": "despite ", "image_url": ""}, {"option_id": "b589d385-37b5-445b-87ca-990c80a3959c", "content": "as a result of", "image_url": ""}, {"option_id": "eeca6d1c-2f30-489f-bd36-d6186cb7a13e", "content": "however", "image_url": ""}, {"option_id": "1885731e-3459-4ca3-bb24-12daffbea2b6", "content": "although", "image_url": ""}], "answer": null}, {"question_id": "17c569fa-dadf-467d-8837-93e9498acfab", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 14, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p>So this is what happened: First, I was doing my job, and suddenly I heard Carlos accusing Karen of something; next, she came to talk to me and I listened to her explanation; then, she told me Carlos accused her of spreading rumors about her, and in response, she said she would confront him about it.</p><p><br /></p><p>What\u2019s the difference between \u201chear\u201d and \u201clisten to\u201d?\u00a0</p><p><br /></p>", "media": null, "options": [{"option_id": "767c8838-b7bc-44c1-8757-5ca0fcaef808", "content": "\"Hear\" is involuntary; \"listen to\" is intentional.\u00a0", "image_url": ""}, {"option_id": "743407da-a459-4432-b658-e8d99486a150", "content": "\u201cListen to\u201d is a passive action;\u00a0\u201chear\u201d is active.", "image_url": ""}, {"option_id": "0c0b99fc-7ea9-4ee1-b6c8-b7a91b7bec02", "content": "Both mean the same and can be used interchangeably.", "image_url": ""}, {"option_id": "f62798f2-86a3-4bef-a145-c7209198f95f", "content": "\u201cHear\u201d is for all sounds; \u201clisten to\u201d is for specific ones.", "image_url": ""}], "answer": null}, {"question_id": "b9a77085-147f-4b21-a074-bb8bc48f761e", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 15, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio, choose the option you did not hear.\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0\u00a0</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/O3-1_ex15.mp3"}, "options": [{"option_id": "52ecf164-7bc2-418f-bc0d-d3723d8764e2", "content": "Lisa has a lot of work to do.", "image_url": ""}, {"option_id": "160581c0-2c00-4b1f-a5c0-f7a031236d0a", "content": "Sam is going to the party.", "image_url": ""}, {"option_id": "31e35124-5306-42fd-b49d-3f18414950de", "content": "Sam will stay at the party all night.", "image_url": ""}, {"option_id": "3642782f-f959-404c-8720-b8077bb959de", "content": "Sam needs to get up early tomorrow.", "image_url": ""}], "answer": null}, {"question_id": "5f95f2a8-6bd2-4ad7-b9f6-52e7fcb3976f", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 16, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. </p><p><br /></p><p>What\u2019s the meaning of: \u201ctook the leap\u201d?\u00a0</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SMALL_TALK_011_Believe it or not.mp3"}, "options": [{"option_id": "7ad331ac-1d5d-470c-a918-c8f3f344038d", "content": "He decided to jump out of happiness.\u00a0", "image_url": ""}, {"option_id": "e032850e-476c-4c41-bd66-0760ce6073e4", "content": "He physically leaped into the air.", "image_url": ""}, {"option_id": "329b0dc1-d260-446c-8e03-67582ac53341", "content": "He took a significant risk or decision.\u00a0", "image_url": ""}, {"option_id": "7d6bbbd8-ccba-4898-8774-42aad82e029c", "content": "He took something with his hands.\u00a0", "image_url": ""}], "answer": null}, {"question_id": "9d5a8124-e877-4c4f-8e48-faecbe1fe2d6", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 17, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. </p><p><br /></p><p>What word couldn\u2019t replace \u201ca plethora of\u201d? </p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/AUTOCORRECT_U012_There were a plethora.mp3"}, "options": [{"option_id": "a91f2d24-11e6-496a-875e-e8cf032882c7", "content": "a bunch of.", "image_url": ""}, {"option_id": "f0f85d2d-41dc-4028-8cd0-73501dd59db6", "content": "many.\u00a0", "image_url": ""}, {"option_id": "800f352c-5adc-4ca9-abae-295c25d147fb", "content": "numerous.", "image_url": ""}, {"option_id": "190d02ed-37a6-4b30-93cf-63f23e59b939", "content": "some.", "image_url": ""}], "answer": null}, {"question_id": "a05b02f3-a883-4624-a57a-b3b7625fbb5f", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 18, "skill_id": "b919bc14-498e-47df-83b7-86b238d47bf7", "description": "<p><strong><em>Giulia:</em></strong><em> Hey, do you like my new hairstyle? I just got my hair cut at Jane\u2019s saloon.\u00a0</em></p><p><strong><em>Jenny:</em></strong><em> For real? ______! I love her technique for cutting curly hair.</em></p><p><br /></p><p>What wouldn\u2019t be a correct way of agreeing in this dialogue:</p><p><br /></p><p><br /></p>", "media": null, "options": [{"option_id": "5baace55-ad95-487e-9958-20402acc4523", "content": "So did I!\u00a0", "image_url": ""}, {"option_id": "1284727c-3172-4009-aa0a-3741faceef50", "content": "Neither Did I!", "image_url": ""}, {"option_id": "38c9bd7d-3277-4522-a2f4-27f68962e6c4", "content": "I did too!\u00a0", "image_url": ""}, {"option_id": "907b4d09-cecd-4058-8eb0-bc40cb289876", "content": "Me too!! ", "image_url": ""}], "answer": null}, {"question_id": "61b5774d-f437-4675-af3e-830f8d48288c", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 19, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio. Choose what you hear:\u00a0</p><p>\u00a0</p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SHADOWING_012_He's an artist whose.mp3"}, "options": [{"option_id": "835170f7-41f8-48af-849e-f1c758761244", "content": "who is.", "image_url": ""}, {"option_id": "216a45eb-3b66-4615-88c0-b8e904ac1b6c", "content": "architect.\u00a0", "image_url": ""}, {"option_id": "ecf2b659-4346-4280-b4e4-f69003b4f3f4", "content": "static. ", "image_url": ""}, {"option_id": "b0177f79-835a-4d44-b8bb-8ea738a7fde2", "content": "whose.", "image_url": ""}], "answer": null}, {"question_id": "57ea013d-ee31-4b39-b6c6-cf197690350a", "assessment_id": "bc7f9339-255c-49dc-8050-1aaf51bfdc94", "type_id": "fad65fbe-f437-4dfa-8be8-3bffb04bc9b0", "type_slug": "multiple-choice-text", "position": 20, "skill_id": "6f39ed6f-d621-4721-9763-e2983d5221d6", "description": "<p>Listen to audio and choose the best answer to the question:</p><p><br /></p><p><br /></p>", "media": {"type": "audio", "url": "https://cdn-jirafales.fluencyacademy.io/content/audios/SMALL_TALK_10_How long have you been.mp3"}, "options": [{"option_id": "a8d73221-ff7f-40c6-8093-12be2bc49db4", "content": "Makes 3 months!\u00a0", "image_url": ""}, {"option_id": "bc87b465-e8d9-4f80-9fd3-8c36072bff29", "content": "Have about 3 months.\u00a0", "image_url": ""}, {"option_id": "5be1a124-c2f7-4ca1-ac19-28b706f9c574", "content": "Did 3 months yesterday!\u00a0", "image_url": ""}, {"option_id": "f6416264-0765-4a61-ab22-1e5dd349a530", "content": "It\u2019s been 3 months.", "image_url": ""}], "answer": null}];
+
+      // 1. Função para renderizar as questões
+      function renderQuiz() {
+        const quizForm = document.getElementById('quiz-form');
+        let htmlContent = '';
+
+        quizData.forEach((question, index) => {
+          const qId = question.question_id;
+          let mediaHtml = '';
+
+          // Verifica e adiciona Mídia (Imagem ou Áudio)
+          if (question.media) {
+            if (question.media.type === 'image' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-image">
+                              <img src="${question.media.url}" alt="Imagem da Questão ${index + 1}" style="max-height:${
+                question.media.height || '300'
+              }px;">
+                          </div>`;
+            } else if (question.media.type === 'audio' && question.media.url) {
+              mediaHtml = `
+                          <div class="question-audio">
+                              <audio controls>
+                                  <source src="${question.media.url}" type="audio/mp3">
+                                  Seu navegador não suporta o elemento de áudio.
+                              </audio>
+                          </div>`;
+            }
+          }
+
+          // Estrutura da Questão
+          htmlContent += `
+                  <div class="question-container" id="q-container-${qId}">
+                      <div class="question-header">Questão ${index + 1}</div>
+                      <div class="question-description">${question.description}</div>
+                      ${mediaHtml}
+                      <ul class="options-list">
+                          ${question.options
+                            .map(
+                              (option) => `
+                              <li class="option-item" id="option-${option.option_id}">
+                                  <input type="radio"
+                                         name="answer-${qId}"
+                                         id="radio-${option.option_id}"
+                                         value="${option.option_id}">
+                                  <label for="radio-${option.option_id}">${option.content}</label>
+                              </li>
+                          `,
+                            )
+                            .join('')}
+                      </ul>
+                  </div>
+              `;
+        });
+
+        quizForm.innerHTML = htmlContent;
+      }
+
+      // 2. Função para validar as respostas
+      function validateQuiz() {
+        let correctCount = 0;
+        const totalQuestions = quizData.length;
+        const resultsDiv = document.getElementById('results');
+
+        // Limpa classes de feedback anteriores
+        document.querySelectorAll('.option-item').forEach((item) => {
+          item.classList.remove('correct-answer', 'incorrect-selected', 'correct-not-selected');
+        });
+
+        quizData.forEach((question) => {
+          const qId = question.question_id;
+          const correctOptionId = question.answer ? question.answer.correct_option_id : null;
+          const selectedInput = document.querySelector(`input[name="answer-${qId}"]:checked`);
+          const selectedOptionId = selectedInput ? selectedInput.value : null;
+
+          // Se a questão tiver uma resposta correta definida
+          if (correctOptionId) {
+            // Marca a resposta correta
+            const correctElement = document.getElementById(`option-${correctOptionId}`);
+            if (correctElement) {
+              correctElement.classList.add('correct-answer');
+            }
+
+            // Verifica se o usuário acertou
+            if (selectedOptionId === correctOptionId) {
+              correctCount++;
+              // A correta já foi marcada, não precisa de mais feedback na correta.
+            } else if (selectedOptionId) {
+              // O usuário selecionou uma resposta, mas estava errada
+              const incorrectElement = document.getElementById(`option-${selectedOptionId}`);
+              if (incorrectElement) {
+                incorrectElement.classList.add('incorrect-selected');
+              }
+            } else {
+              // O usuário não selecionou nenhuma resposta, e a correta foi marcada (amarelo)
+              if (correctElement) {
+                correctElement.classList.remove('correct-answer'); // Remove o verde para usar o amarelo
+                correctElement.classList.add('correct-not-selected');
+              }
+            }
+          }
+
+          // Desabilita os botões de rádio após a validação para evitar mudanças
+          document.querySelectorAll(`input[name="answer-${qId}"]`).forEach((input) => {
+            input.disabled = true;
+          });
+        });
+
+        // Exibe os resultados
+        resultsDiv.innerHTML = `Você acertou ${correctCount} de ${totalQuestions} questões! 🎯`;
+        resultsDiv.style.display = 'block';
+      }
+
+      // Inicia a renderização do quiz quando a página carrega
+      window.onload = renderQuiz;
+    </script>
+  </body>
+</html>
