@@ -2,9 +2,6 @@
   "name": "engleap-root",
   "private": true,
   "version": "1.0.0",
-  "workspaces": [
-    "srs-app"
-  ],
   "scripts": {
     "dev": "cd srs-app && npm run dev",
     "build": "cd srs-app && npm run build",
